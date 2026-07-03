@@ -1,0 +1,34 @@
+/* ============================================================
+   Pricing page — page-specific styles only.
+   Fonts, tokens, header, footer and shared components live in
+   site.css and must never be redefined here.
+   ============================================================ */
+
+/* Smooth anchor scrolling (DK switches it off under reduced motion). */
+html { scroll-behavior: smooth; }
+
+/* VIP card stitched-frame draw (started from page-pricing.js on reveal). */
+@keyframes vipStitch { from { stroke-dashoffset: 2400; } to { stroke-dashoffset: 0; } }
+
+/* ---- Hover/active states unique to this page (from the design's
+        style-hover attributes; !important beats inline styles) ---- */
+.hv467fc8:hover { outline: 2px dashed #E76F51 !important; outline-offset: 4px !important; transform: translateY(-3px) !important; box-shadow: 0 16px 34px -22px rgba(31,42,68,.45) !important; }
+.hv5ebc2e:hover { background: var(--color-primary-hover) !important; transform: translateY(-2px) !important; box-shadow: 0 14px 32px rgba(231,111,81,.42) !important; }
+.hv5ebc2e:active { transform: scale(.98) !important; }
+
+/* ---- Plan order (the design's applyResponsive):
+        base first on desktop, VIP first on mobile ---- */
+@media (min-width: 900px) {
+  #planRow [data-plan="base"] { order: 1; }
+  #planRow [data-plan="vip"] { order: 2; }
+}
+
+/* ---- Mobile layout (the design's applyResponsive, as media queries;
+        !important is needed to override the desktop inline styles) ---- */
+@media (max-width: 899.98px) {
+  #heroTitle { font-size: 31px !important; }
+  #heroWrap { padding: 106px 20px 28px !important; }
+  [data-h2] { font-size: 27px !important; }
+  #planRow [data-plan="vip"] { order: 1; }
+  #planRow [data-plan="base"] { order: 2; }
+}

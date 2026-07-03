@@ -1,0 +1,30 @@
+/* ============================================================
+   Contact page — page-specific styles only.
+   Fonts, tokens, header, footer and shared components live in
+   site.css and must never be redefined here.
+   ============================================================ */
+
+/* ---- From the design's helmet block ---- */
+html { scroll-behavior: smooth; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ---- Hover/active states unique to this page (from the design's
+        style-hover/style-active attributes; !important beats inline) ---- */
+.hvffc1fa:hover { background: var(--color-primary-hover) !important; }
+.hvffc1fa:active { transform: scale(.99) !important; }
+
+/* ---- Focus states from the design's style-focus attributes on the
+        consultation form fields (identical for all five fields) ---- */
+#consultForm input:focus,
+#consultForm select:focus,
+#consultForm textarea:focus {
+  border-color: #E76F51 !important;
+  box-shadow: 0 0 0 3px rgba(231, 111, 81, .15) !important;
+}
+
+/* ---- Mobile layout (the design's applyResponsive, as media queries;
+        !important is needed to override the desktop inline styles) ---- */
+@media (max-width: 899.98px) {
+  #heroTitle { font-size: 30px !important; }
+  #heroWrap { padding: 104px 20px 28px !important; }
+}

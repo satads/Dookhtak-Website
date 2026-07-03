@@ -1,0 +1,30 @@
+/* ============================================================
+   Tutorials page — page-specific styles only.
+   Fonts, tokens, header, footer and shared components live in
+   site.css and must never be redefined here.
+   ============================================================ */
+
+/* ---- Hover/active states unique to this page (from the design's
+        style-hover/style-active attributes; !important beats inline) ---- */
+.hv480c7e:active { background: #F8DFD4 !important; }
+.hve1c063:hover { background: #F5F2EA !important; }
+.hv7d4772:hover { border-color: #E76F51 !important; transform: translateY(-2px) !important; }
+.hv006c9d:active { background: #FCEFEA !important; }
+.hv3907de:active { background: #F5F2EA !important; }
+
+/* ---- Search input focus ring (from the design's style-focus) ---- */
+.tut-search:focus { border-color: #E76F51 !important; box-shadow: 0 0 0 3px rgba(231,111,81,.15) !important; }
+
+/* ---- Sidebar / mobile bar layout (the design's applyResponsive,
+        breakpoint 1024, as media queries; !important overrides the
+        inline desktop defaults) ---- */
+@media (min-width: 1024px) {
+  #sideDesk { display: block !important; }
+  #mobileBar { display: none !important; }
+  #pageTitle { font-size: 32px !important; }
+}
+@media (max-width: 1023.98px) {
+  #sideDesk { display: none !important; }
+  #mobileBar { display: block !important; }
+  #pageTitle { font-size: 26px !important; }
+}
