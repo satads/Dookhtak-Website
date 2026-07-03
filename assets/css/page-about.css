@@ -1,0 +1,21 @@
+/* ============================================================
+   About page — page-specific styles only.
+   Fonts, tokens, header, footer and shared components live in
+   site.css and must never be redefined here.
+   ============================================================ */
+
+/* ---- From the design's helmet block ---- */
+html { scroll-behavior: smooth; }
+@keyframes tagSwing { 0%, 100% { transform: rotate(-1.6deg); } 50% { transform: rotate(1.6deg); } }
+
+/* ---- Hover states unique to this page (from style-hover attributes;
+        !important beats inline styles) ---- */
+.hv220710:hover { background: #FCEFEA !important; }
+
+/* ---- Mobile layout (the design's applyResponsive, as media queries;
+        desktop keeps each element's inline styles) ---- */
+@media (max-width: 899.98px) {
+  #heroTitle { font-size: 30px !important; }
+  #heroWrap { padding: 106px 20px 32px !important; }
+  [data-h2] { font-size: 26px !important; }
+}

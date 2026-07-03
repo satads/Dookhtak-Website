@@ -1,0 +1,24 @@
+/* ============================================================
+   Blog archive page — page-specific styles only.
+   Fonts, tokens, header, footer and shared components live in
+   site.css and must never be redefined here.
+   ============================================================ */
+
+/* ---- Hover states unique to this page (from the design's
+        style-hover attributes; !important beats inline styles) ---- */
+.hv2f5ab8:hover { transform: translateY(-3px) !important; outline: 2px dashed #E76F51 !important; outline-offset: 5px !important; box-shadow: 0 18px 40px -24px rgba(31,42,68,.45) !important; }
+.hv2fb6f5:hover { border-color: #E76F51 !important; color: #E76F51 !important; }
+
+/* ---- Mobile layout (the design's applyResponsive, as media queries;
+        !important is needed to override the desktop inline styles) ---- */
+@media (max-width: 899.98px) {
+  #heroTitle { font-size: 30px !important; }
+  #heroWrap { padding: 104px 20px 24px !important; }
+
+  /* category chips become a horizontal snap scroller on mobile */
+  #chipRow {
+    flex-wrap: nowrap !important;
+    justify-content: flex-start !important;
+    scroll-snap-type: x proximity;
+  }
+}

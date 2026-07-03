@@ -1,0 +1,48 @@
+/* ============================================================
+   Features page — page-specific styles only.
+   Fonts, tokens, header, footer and shared components live in
+   site.css and must never be redefined here.
+   ============================================================ */
+
+/* Chapter chips are in-page anchors; the design scrolls to them
+   smoothly (site.js switches to auto for reduced motion). */
+html { scroll-behavior: smooth; }
+
+/* ---- Hover states unique to this page (from the design's
+        style-hover attributes; !important beats inline styles) ---- */
+.hv76221a:hover { transform: translateY(-3px) !important; box-shadow: 0 16px 34px -22px rgba(31,42,68,.45) !important; }
+
+/* ---- Chapter zigzag (desktop) — the design set these via JS;
+        the columns carry no inline flex/width, so no !important ---- */
+@media (min-width: 900px) {
+  [data-ch] > * { flex: 0 0 53%; }
+  [data-ch] > [data-col="vis"] { flex: 0 0 39%; }
+  [data-ch][data-side="b"] { flex-direction: row-reverse; }
+}
+
+/* ---- Checklist columns (the design's own 1000/620 breakpoints;
+        3 columns are inline in the markup) ---- */
+@media (max-width: 999.98px) {
+  #checkGrid { grid-template-columns: repeat(2, 1fr) !important; }
+}
+@media (max-width: 619.98px) {
+  #checkGrid { grid-template-columns: 1fr !important; }
+}
+
+/* ---- Mobile layout (the design's applyResponsive, as media queries;
+        !important is needed to override the desktop inline styles) ---- */
+@media (max-width: 899.98px) {
+  #heroTitle { font-size: 31px !important; }
+  #heroWrap { padding: 108px 20px 36px !important; }
+  [data-h2] { font-size: 27px !important; }
+
+  #chipBar { top: 72px !important; }
+  #chipRow { justify-content: flex-start !important; scroll-snap-type: x proximity; }
+
+  /* seam moves to the edge; chapters stack and indent past it */
+  #seam { inset-inline-start: 7px !important; }
+  [data-ch] { flex-direction: column !important; }
+  [data-ch] > * { flex: 1 1 auto; width: 100%; }
+  [data-chsec] { padding-inline-start: 30px !important; }
+  [data-subrow] { padding-inline-start: 30px; }
+}
