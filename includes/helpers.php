@@ -87,6 +87,36 @@ function jalali_date(int|string $date, bool $with_time = false): string
     return $out;
 }
 
+/**
+ * Persian relative time ("۲ ساعت پیش") for recent items, falling back
+ * to the Jalali date for anything older than a week — matches the
+ * admin design's submission timestamps.
+ */
+function fa_time_ago(int|string $date): string
+{
+    $ts = is_int($date) ? $date : strtotime($date);
+    if ($ts === false) {
+        return '';
+    }
+    $diff = time() - $ts;
+    if ($diff < 60) {
+        return 'لحظاتی پیش';
+    }
+    if ($diff < 3600) {
+        return fa_digits(intdiv($diff, 60)) . ' دقیقه پیش';
+    }
+    if ($diff < 86400) {
+        return fa_digits(intdiv($diff, 3600)) . ' ساعت پیش';
+    }
+    if ($diff < 172800) {
+        return 'دیروز';
+    }
+    if ($diff < 604800) {
+        return fa_digits(intdiv($diff, 86400)) . ' روز پیش';
+    }
+    return jalali_date($ts);
+}
+
 /** Latin URL slug: lowercase, a-z0-9 and dashes only. */
 function slugify(string $s): string
 {

@@ -20,6 +20,12 @@ if ($uri !== '/' && file_exists(__DIR__ . $uri) && !is_dir(__DIR__ . $uri)) {
     return false;
 }
 
+// Directory index for /admin (Apache DirectoryIndex handles this in prod).
+if (preg_match('#^/admin/?$#', $uri)) {
+    require __DIR__ . '/admin/index.php';
+    return true;
+}
+
 // /blog/{slug}
 if (preg_match('#^/blog/([a-z0-9-]+)/?$#', $uri, $m)) {
     $_GET['slug'] = $m[1];
