@@ -5,6 +5,7 @@
  * Phase 5). Markup is the approved design, converted 1:1.
  */
 require_once __DIR__ . '/includes/layout.php';
+require_once __DIR__ . '/includes/blog_lib.php';
 
 // FAQ (home) — matches the `faqs` seeds for page='home'.
 $faqs = [
@@ -468,72 +469,7 @@ render_head([
         <p style="font-size:16.5px;color:#6B7280;margin:20px 0 0;">نکته‌ها و ترفندهای مدیریت خیاطی و مزون‌داری</p>
       </div>
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:22px;">
-        <div data-rv="y" data-rv-delay="0" style="opacity:0;transform:translateY(18px);transition:opacity .5s ease,transform .5s ease;">
-          <a class="hv04e05c" href="/blog" style="position:relative;display:flex;flex-direction:column;height:100%;background:#fff;border:1px solid #E8E6E1;border-radius:20px;overflow:hidden;box-shadow:0 2px 5px rgba(31,42,68,.05),0 16px 40px -28px rgba(31,42,68,.45);transition:transform .3s cubic-bezier(.2,.7,.3,1),box-shadow .3s ease,border-color .3s ease;">
-            <div style="position:relative;height:168px;background:linear-gradient(150deg,#FCEFEA,#F0C9B8);overflow:hidden;">
-              <span style="position:absolute;inset:0;background-image:repeating-linear-gradient(-45deg,rgba(255,255,255,.14) 0 2px,transparent 2px 14px);"></span>
-              <span style="position:absolute;bottom:-26px;inset-inline-start:-26px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.22);"></span>
-              <span style="position:absolute;bottom:14px;inset-inline-end:14px;background:rgba(255,255,255,.94);color:#D45A3D;font-size:11.5px;font-weight:700;padding:5px 13px;border-radius:999px;box-shadow:0 4px 12px rgba(31,42,68,.14);">قیمت‌گذاری</span>
-            </div>
-            <div style="display:flex;flex-direction:column;flex:1;padding:22px;text-align:start;">
-              <h3 style="font-size:17.5px;font-weight:700;color:#1F2A44;margin:0 0 12px;line-height:1.75;">۷ اشتباه رایج در قیمت‌گذاری دوخت سفارشی</h3>
-              <div style="display:flex;align-items:center;gap:8px;font-size:12.5px;color:#6B7280;">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>
-                ۲ تیر ۱۴۰۵
-                <span style="width:3px;height:3px;border-radius:50%;background:#c9c3b6;"></span>
-                ۵ دقیقه مطالعه
-              </div>
-              <div style="display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:16px;border-top:2px dashed #F0EBE1;margin-top:16px;">
-                <span style="color:#E76F51;font-weight:700;font-size:14px;">ادامه مطلب</span>
-                <span style="display:inline-flex;width:32px;height:32px;align-items:center;justify-content:center;background:#FCEFEA;border-radius:50%;color:#E76F51;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="transform:scaleX(-1);"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
-              </div>
-            </div>
-          </a>
-        </div>
-        <div data-rv="y" data-rv-delay="70" style="opacity:0;transform:translateY(18px);transition:opacity .5s ease,transform .5s ease;">
-          <a class="hv04e05c" href="/blog" style="position:relative;display:flex;flex-direction:column;height:100%;background:#fff;border:1px solid #E8E6E1;border-radius:20px;overflow:hidden;box-shadow:0 2px 5px rgba(31,42,68,.05),0 16px 40px -28px rgba(31,42,68,.45);transition:transform .3s cubic-bezier(.2,.7,.3,1),box-shadow .3s ease,border-color .3s ease;">
-            <div style="position:relative;height:168px;background:linear-gradient(150deg,#EEF1F7,#CBD4E6);overflow:hidden;">
-              <span style="position:absolute;inset:0;background-image:repeating-linear-gradient(-45deg,rgba(255,255,255,.14) 0 2px,transparent 2px 14px);"></span>
-              <span style="position:absolute;bottom:-26px;inset-inline-start:-26px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.22);"></span>
-              <span style="position:absolute;bottom:14px;inset-inline-end:14px;background:rgba(255,255,255,.94);color:#D45A3D;font-size:11.5px;font-weight:700;padding:5px 13px;border-radius:999px;box-shadow:0 4px 12px rgba(31,42,68,.14);">مشتری‌مداری</span>
-            </div>
-            <div style="display:flex;flex-direction:column;flex:1;padding:22px;text-align:start;">
-              <h3 style="font-size:17.5px;font-weight:700;color:#1F2A44;margin:0 0 12px;line-height:1.75;">چطور مشتری ثابت بسازیم؟</h3>
-              <div style="display:flex;align-items:center;gap:8px;font-size:12.5px;color:#6B7280;">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>
-                ۲۸ خرداد ۱۴۰۵
-                <span style="width:3px;height:3px;border-radius:50%;background:#c9c3b6;"></span>
-                ۴ دقیقه مطالعه
-              </div>
-              <div style="display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:16px;border-top:2px dashed #F0EBE1;margin-top:16px;">
-                <span style="color:#E76F51;font-weight:700;font-size:14px;">ادامه مطلب</span>
-                <span style="display:inline-flex;width:32px;height:32px;align-items:center;justify-content:center;background:#FCEFEA;border-radius:50%;color:#E76F51;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="transform:scaleX(-1);"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
-              </div>
-            </div>
-          </a>
-        </div>
-        <div data-rv="y" data-rv-delay="140" style="opacity:0;transform:translateY(18px);transition:opacity .5s ease,transform .5s ease;">
-          <a class="hv04e05c" href="/blog" style="position:relative;display:flex;flex-direction:column;height:100%;background:#fff;border:1px solid #E8E6E1;border-radius:20px;overflow:hidden;box-shadow:0 2px 5px rgba(31,42,68,.05),0 16px 40px -28px rgba(31,42,68,.45);transition:transform .3s cubic-bezier(.2,.7,.3,1),box-shadow .3s ease,border-color .3s ease;">
-            <div style="position:relative;height:168px;background:linear-gradient(150deg,#EFEBE2,#DCD2BC);overflow:hidden;">
-              <span style="position:absolute;inset:0;background-image:repeating-linear-gradient(-45deg,rgba(255,255,255,.14) 0 2px,transparent 2px 14px);"></span>
-              <span style="position:absolute;bottom:-26px;inset-inline-start:-26px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.22);"></span>
-              <span style="position:absolute;bottom:14px;inset-inline-end:14px;background:rgba(255,255,255,.94);color:#D45A3D;font-size:11.5px;font-weight:700;padding:5px 13px;border-radius:999px;box-shadow:0 4px 12px rgba(31,42,68,.14);">عکاسی</span>
-            </div>
-            <div style="display:flex;flex-direction:column;flex:1;padding:22px;text-align:start;">
-              <h3 style="font-size:17.5px;font-weight:700;color:#1F2A44;margin:0 0 12px;line-height:1.75;">راهنمای عکاسی از نمونه‌کار با گوشی</h3>
-              <div style="display:flex;align-items:center;gap:8px;font-size:12.5px;color:#6B7280;">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>
-                ۱۵ خرداد ۱۴۰۵
-                <span style="width:3px;height:3px;border-radius:50%;background:#c9c3b6;"></span>
-                ۶ دقیقه مطالعه
-              </div>
-              <div style="display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:16px;border-top:2px dashed #F0EBE1;margin-top:16px;">
-                <span style="color:#E76F51;font-weight:700;font-size:14px;">ادامه مطلب</span>
-                <span style="display:inline-flex;width:32px;height:32px;align-items:center;justify-content:center;background:#FCEFEA;border-radius:50%;color:#E76F51;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="transform:scaleX(-1);"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
-              </div>
-            </div>
-          </a>
-        </div>
+        <?php foreach (blog_latest(3) as $i => $home_post) { echo blog_card($home_post, $i * 70); } ?>
       </div>
       <div data-rv="y" style="opacity:0;transform:translateY(18px);transition:opacity .5s ease,transform .5s ease;text-align:center;margin-top:32px;">
         <a class="hvfa4bd4" href="/blog" style="display:inline-flex;align-items:center;justify-content:center;min-height:48px;color:#1F2A44;font-weight:700;font-size:15.5px;padding:12px 30px;border-radius:12px;border:1.5px solid #1F2A44;transition:background .2s ease,color .2s ease;">همه مقاله‌ها</a>

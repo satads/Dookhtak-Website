@@ -8,6 +8,26 @@
         style-hover attributes; !important beats inline styles) ---- */
 .hv36d784:hover { color: #E76F51 !important; border-color: #E76F51 !important; }
 
+/* ---- Post body typography (Phase 3) ----
+   The editor stores semantic HTML (p/h2/h3/ul/ol/blockquote/a/img);
+   these rules reproduce the approved design's article typography that
+   the export expressed as inline styles on its sample body. ---- */
+.post-body p { margin: 0 0 1.2em; }
+.post-body h2 { font-size: 24px; font-weight: 700; color: #1F2A44; line-height: 1.6; margin: 1.8em 0 .6em; }
+.post-body h2::after { content: ''; display: block; width: 64px; height: 2px; background-image: repeating-linear-gradient(90deg, #E76F51 0 8px, transparent 8px 14px); margin-top: 12px; }
+.post-body h3 { font-size: 19px; font-weight: 700; color: #1F2A44; margin: 1.6em 0 .5em; }
+.post-body blockquote { margin: 1.6em 0; padding: 20px 22px; background: #FCEFEA; border-radius: 14px; position: relative; font-size: 18.5px; line-height: 2; color: #1F2A44; }
+.post-body blockquote::before { content: ''; position: absolute; top: 14px; bottom: 14px; inset-inline-start: 0; width: 3px; background-image: repeating-linear-gradient(180deg, #E76F51 0 8px, transparent 8px 14px); }
+.post-body ul, .post-body ol { margin: 0 0 1.2em; padding: 0; padding-inline-start: 22px; list-style: none; }
+.post-body ul li, .post-body ol li[data-list="bullet"] { position: relative; margin-bottom: .7em; }
+.post-body ul li::before, .post-body ol li[data-list="bullet"]::before { content: ''; position: absolute; inset-inline-start: -22px; top: 14px; width: 8px; height: 8px; border-radius: 50%; background: #E76F51; }
+.post-body ol li[data-list="ordered"] { list-style: persian; margin-bottom: .7em; }
+.post-body a { color: #E76F51; font-weight: 700; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+.post-body img { max-width: 100%; border-radius: 14px; margin: 1.8em 0; display: block; }
+.post-body strong { color: #1F2A44; }
+/* Quill UI leftovers must never affect the public page */
+.post-body .ql-ui { display: none; }
+
 /* ---- Responsive layout (the design's applyResponsive, as media
         queries; !important overrides the inline defaults) ---- */
 @media (max-width: 899.98px) {

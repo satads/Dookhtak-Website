@@ -105,6 +105,21 @@ body.admin :focus-visible { outline: 2px solid #E76F51; outline-offset: 2px; }
 .a-media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
 .a-media-thumb { display: block; width: 100%; aspect-ratio: 4/3; object-fit: cover; background: #F7F6F3; border-bottom: 1px solid #F0EDE6; }
 
+/* ---- Post editor (Quill 2, self-hosted; design toolbar) ---- */
+.a-ql { min-width: 36px; min-height: 36px; background: none; border: none; border-radius: 7px; font-size: 13px; font-weight: 700; color: #3D4A6B; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; padding: 0 8px; }
+.a-ql:hover, .a-ql.ql-active { background: #FCEFEA; color: #D45A3D; }
+#edToolbar.ql-toolbar { font-family: inherit; box-sizing: border-box; }
+#edBody.ql-container { min-height: 340px; border: 1px solid #E8E6E1; border-radius: 0 0 9px 9px; font-family: inherit; font-size: 15px; }
+#edBody .ql-editor { min-height: 340px; padding: 16px 18px; line-height: 2; color: #3D4A6B; text-align: right; direction: rtl; }
+#edBody .ql-editor.ql-blank::before { color: #9a9587; font-style: normal; right: 18px; left: auto; }
+#edBody .ql-editor h2 { font-size: 20px; font-weight: 700; color: #1F2A44; margin: 1.2em 0 .4em; }
+#edBody .ql-editor h3 { font-size: 17px; font-weight: 700; color: #1F2A44; margin: 1em 0 .4em; }
+#edBody .ql-editor blockquote { background: #FCEFEA; border-radius: 10px; border-inline-start: 3px solid #E76F51; padding: 10px 14px; margin: 1em 0; }
+#edBody .ql-editor img { max-width: 100%; border-radius: 10px; }
+#edBody .ql-editor a { color: #E76F51; text-decoration: underline; }
+.ql-tooltip { direction: ltr; z-index: 60; }
+.a-cover-btn:hover { border-color: #E76F51 !important; color: #E76F51 !important; }
+
 /* ---- Admin drawer (mobile sidebar) ---- */
 #admDrawerOverlay { position: fixed; inset: 0; z-index: 80; background: rgba(31, 42, 68, .45); opacity: 0; pointer-events: none; transition: opacity .3s ease; }
 #admDrawer { position: fixed; top: 0; bottom: 0; inset-inline-start: 0; width: 270px; max-width: 85vw; background: #1F2A44; color: #b7bed0; z-index: 81; transform: translateX(110%); transition: transform .3s ease; display: flex; flex-direction: column; padding: 16px 12px; overflow-y: auto; }

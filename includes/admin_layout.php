@@ -33,8 +33,8 @@ function admin_nav(): array
     ];
     return [
         ['dash',     'داشبورد',           $icons['dash'],     '/admin/dashboard.php', true],
-        ['blog',     'بلاگ',              $icons['blog'],     '#',                    false],
-        ['blogcats', 'دسته‌های بلاگ',      $icons['cats'],     '#',                    false],
+        ['blog',     'بلاگ',              $icons['blog'],     '/admin/blog.php',      true],
+        ['blogcats', 'دسته‌های بلاگ',      $icons['cats'],     '/admin/blog-categories.php', true],
         ['tuts',     'آموزش‌ها',           $icons['tut'],      '#',                    false],
         ['tutcats',  'دسته‌های آموزش',     $icons['cats'],     '#',                    false],
         ['faq',      'سؤالات متداول',      $icons['faq'],      '#',                    false],

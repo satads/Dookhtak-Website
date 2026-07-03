@@ -50,7 +50,7 @@ admin_page_start('داشبورد', 'dash');
   </div>
 
   <div style="display:flex;gap:10px;margin-bottom:18px;">
-    <button type="button" class="a-btn a-btn-primary" disabled title="به‌زودی">+ مقاله جدید</button>
+    <a href="/admin/blog-edit.php" class="a-btn a-btn-primary" style="text-decoration:none;">+ مقاله جدید</a>
     <button type="button" class="a-btn a-btn-outline" disabled title="به‌زودی">+ آموزش جدید</button>
   </div>
 
