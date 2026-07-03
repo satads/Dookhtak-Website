@@ -6,6 +6,12 @@ cache/page_*.html
 uploads/images/**
 !uploads/images/.gitkeep
 
+# QA screenshots (dev only)
+qa/baselines/
+qa/current/
+qa/node_modules/
+qa/package*.json
+
 # OS noise
 .DS_Store
 Thumbs.db

@@ -17,6 +17,23 @@
 
 ---
 
+## Phase Tracker
+
+| فاز | وضعیت | تاریخ تکمیل | تگ گیت | خلاصه تست |
+|-----|--------|-------------|---------|------------|
+| ۱ — Foundation & Static Conversion | COMPLETE | 2026-07-03 | `phase-1-complete` | ممیزی خودکار ۴۰/۴۰ پاس + اسکرین‌شات ۸ صفحه دسکتاپ/موبایل مطابق دیزاین + هارنس SPA آموزش‌ها ۳۷/۳۷ |
+| ۲ — Admin Shell, Auth, Settings & Media | PENDING | — | — | — |
+| ۳ — Blog (Admin + Public SSR) | PENDING | — | — | — |
+| ۴ — Tutorials Structured Builder | PENDING | — | — | — |
+| ۵ — Pricing, FAQ, Testimonials, Contact & Mother Adapter | PENDING | — | — | — |
+| ۶ — SEO, Performance & Delivery | PENDING | — | — | — |
+
+قانون: هر فاز فقط با پیام صریح «APPROVED — proceed to phase N+1» باز می‌شود. مرجع محدوده هر فاز: `BUILD_PLAN.md` (منبع واحد حقیقت).
+
+**زیرساخت QA بصری:** `qa/screenshot.js` (Playwright + Chromium محلی) از ۸ صفحه عمومی اسکرین‌شات دسکتاپ (۱۴۴۰) و موبایل (۳۹۰) می‌گیرد؛ baseline فاز ۱ در `qa/baselines/` (git-ignored). بعد از هر فاز: `node qa/screenshot.js current` سپس `node qa/compare.js` — هر تفاوت خارج از محدوده فاز = شکست رگرسیون.
+
+---
+
 ## ساختار پروژه
 
 ```
