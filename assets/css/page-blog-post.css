@@ -1,0 +1,23 @@
+/* ============================================================
+   Blog single-post page — page-specific styles only.
+   Fonts, tokens, header, footer and shared components live in
+   site.css and must never be redefined here.
+   ============================================================ */
+
+/* ---- Hover state unique to this page (from the design's
+        style-hover attributes; !important beats inline styles) ---- */
+.hv36d784:hover { color: #E76F51 !important; border-color: #E76F51 !important; }
+
+/* ---- Responsive layout (the design's applyResponsive, as media
+        queries; !important overrides the inline defaults) ---- */
+@media (max-width: 899.98px) {
+  #postTitle { font-size: 28px !important; }
+}
+@media (min-width: 900px) {
+  /* Reading progress tape: desktop only (inline default is display:none) */
+  #readTape { display: block !important; }
+}
+@media (min-width: 1240px) {
+  /* Floating share column: wide desktop only (inline default is display:none) */
+  #shareCol { display: flex !important; }
+}
