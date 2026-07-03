@@ -51,7 +51,7 @@ admin_page_start('داشبورد', 'dash');
 
   <div style="display:flex;gap:10px;margin-bottom:18px;">
     <a href="/admin/blog-edit.php" class="a-btn a-btn-primary" style="text-decoration:none;">+ مقاله جدید</a>
-    <button type="button" class="a-btn a-btn-outline" disabled title="به‌زودی">+ آموزش جدید</button>
+    <a href="/admin/tutorial-edit.php" class="a-btn a-btn-outline" style="text-decoration:none;">+ آموزش جدید</a>
   </div>
 
   <div class="a-card" style="overflow:hidden;">

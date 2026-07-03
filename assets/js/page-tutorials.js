@@ -1,15 +1,16 @@
 /* ============================================================
-   Tutorials SPA — Phase 1: fully client-side with static data
-   (Phase 4 rewires the data source to the API). Ports the design
-   export's DC script behavior 1:1: hash deep links, accordion
+   Tutorials SPA — Phase 4: data comes from the site API
+   (/api/tutorials.php index + /api/tutorial.php fragments), with
+   every Phase-1 behavior preserved: hash deep links, accordion
    sidebar, live search, quick-start path, fragment loading with
    cache/skeleton/error-retry, prev-next nav, delegated fragment
    clicks and the mobile list drawer.
    ============================================================ */
-import { CATEGORIES, TUTORIALS, QUICK_START } from './tutorials-data.js';
+let CATEGORIES = [];
+let TUTORIALS = [];
+let QUICK_START = [];
 
 const state = { q: '', current: null, open: {}, listDrawer: false };
-if (CATEGORIES[0]) state.open[CATEGORIES[0].id] = true;
 
 const cache = {};        // loaded fragment cache
 let loadToken = 0;       // guards against out-of-order paints
@@ -29,10 +30,11 @@ function norm(s) { return (s || '').replace(/\u200c/g, ' ').toLowerCase(); }
 function findTut(id) { return TUTORIALS.find(t => t.id === id); }
 
 const catTitle = {};
-CATEGORIES.forEach(c => { catTitle[c.id] = c.title; });
-
 const bySlug = {};
-TUTORIALS.forEach(t => { bySlug[t.id] = t; });
+function indexData() {
+  CATEGORIES.forEach(c => { catTitle[c.id] = c.title; });
+  TUTORIALS.forEach(t => { bySlug[t.id] = t; });
+}
 
 /* ---- element refs (static shell) ---- */
 const sideList = document.getElementById('sideList');
@@ -92,7 +94,7 @@ function itemHTML(t, drawer) {
 function catHTML(c, drawer) {
   return '<div style="border-bottom:2px dashed #F0EBE1;">'
     + '<button data-cat-toggle="' + c.id + '" style="width:100%;min-height:48px;background:none;border:none;display:flex;align-items:center;gap:10px;padding:11px 4px;text-align:start;">'
-    + '<span style="flex:none;display:inline-flex;width:32px;height:32px;align-items:center;justify-content:center;background:#FCEFEA;border-radius:50%;color:#E76F51;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="' + c.icon + '"/></svg></span>'
+    + '<span style="flex:none;display:inline-flex;width:32px;height:32px;align-items:center;justify-content:center;background:#FCEFEA;border-radius:50%;color:#E76F51;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + c.icon + '</svg></span>'
     + '<b style="flex:1;font-size:' + (drawer ? '14.5px' : '14px') + ';color:#1F2A44;">' + esc(c.title) + '</b>'
     + '<span style="flex:none;font-size:11.5px;color:#9a9587;background:#FAF8F4;border-radius:999px;padding:2px 9px;">' + c.count + '</span>'
     + '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex:none;transform:rotate(' + c.rot + ');transition:transform .3s ease;"><path d="m6 9 6 6 6-6"/></svg>'
@@ -275,11 +277,12 @@ async function loadContent(t) {
     </div>`);
 
   try {
-    const res = await fetch(t.file);
+    const res = await fetch('/api/tutorial.php?slug=' + encodeURIComponent(t.id));
     if (!res.ok) throw new Error('http ' + res.status);
-    const html = await res.text();
-    cache[t.id] = html;
-    paint(html);
+    const data = await res.json();
+    if (!data.ok) throw new Error('api');
+    cache[t.id] = data.html;
+    paint(data.html);
   } catch (e) {
     paint(`<div style="text-align:center;background:#fff;border:1px solid #E8E6E1;border-radius:16px;padding:36px 20px;">
         <div style="font-size:16px;font-weight:700;color:#1F2A44;margin-bottom:14px;">بارگذاری این آموزش ناموفق بود</div>
@@ -368,11 +371,32 @@ document.addEventListener('click', (e) => {
 });
 
 /* ============================================================
-   Boot: initial render, then hash routing
+   Boot: fetch the index from the API, then render + hash routing
    ============================================================ */
-renderContent();
-renderSidebars();
-renderMobileBar();
+async function init() {
+  try {
+    const res = await fetch('/api/tutorials.php');
+    if (!res.ok) throw new Error('http ' + res.status);
+    const data = await res.json();
+    CATEGORIES = data.categories || [];
+    TUTORIALS = data.tutorials || [];
+    QUICK_START = data.quick_start || [];
+    indexData();
+    if (CATEGORIES[0] && Object.keys(state.open).length === 0) state.open[CATEGORIES[0].id] = true;
 
-window.addEventListener('hashchange', () => applyHash(false));
-setTimeout(() => applyHash(true), 60);
+    renderContent();
+    renderSidebars();
+    renderMobileBar();
+
+    window.addEventListener('hashchange', () => applyHash(false));
+    setTimeout(() => applyHash(true), 60);
+  } catch (e) {
+    contentArea.innerHTML = '<div style="text-align:center;background:#fff;border:1px solid #E8E6E1;border-radius:16px;padding:36px 20px;">'
+      + '<div style="font-size:16px;font-weight:700;color:#1F2A44;margin-bottom:14px;">بارگذاری فهرست آموزش‌ها ناموفق بود</div>'
+      + '<button data-boot-retry style="display:inline-flex;align-items:center;justify-content:center;min-height:46px;background:#E76F51;color:#fff;border:none;font-family:inherit;font-weight:700;font-size:14.5px;padding:11px 26px;border-radius:12px;cursor:pointer;">تلاش دوباره</button>'
+      + '</div>';
+    const btn = contentArea.querySelector('[data-boot-retry]');
+    if (btn) btn.addEventListener('click', init);
+  }
+}
+init();
