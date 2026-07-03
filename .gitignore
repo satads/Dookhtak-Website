@@ -3,7 +3,8 @@ includes/config.php
 
 # Runtime artifacts
 cache/page_*.html
-uploads/images/
+uploads/images/**
+!uploads/images/.gitkeep
 
 # OS noise
 .DS_Store
