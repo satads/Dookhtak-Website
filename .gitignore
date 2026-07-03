@@ -1,0 +1,10 @@
+# Real configuration lives only on the server
+includes/config.php
+
+# Runtime artifacts
+cache/page_*.html
+uploads/images/
+
+# OS noise
+.DS_Store
+Thumbs.db

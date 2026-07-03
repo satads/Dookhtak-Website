@@ -1,0 +1,44 @@
+# ============================================
+# Dookhtak website — Apache configuration
+# ============================================
+
+# ---- Security headers ----
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# ---- Deny access to sensitive directories ----
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Block /includes, /database, /cache from the web entirely
+    RewriteRule ^(includes|database|cache)(/|$) - [F,L]
+
+    # ---- HTTPS redirect ----
+    # Enable after the SSL certificate is installed on cPanel:
+    # uncomment the two lines below (toggle).
+    # RewriteCond %{HTTPS} !=on
+    # RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+    # ---- Canonical host: non-www ----
+    # dookhtak.ir is the canonical host; www redirects to it.
+    RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+    RewriteRule ^ https://%1%{REQUEST_URI} [R=301,L]
+
+    # ---- Clean URLs ----
+    # /blog/{slug} -> blog-post.php (Phase 3 moves this to full SSR)
+    RewriteRule ^blog/([a-z0-9-]+)/?$ blog-post.php?slug=$1 [QSA,L]
+
+    # /features, /pricing, ... -> page.php
+    RewriteRule ^features/?$  features.php  [QSA,L]
+    RewriteRule ^pricing/?$   pricing.php   [QSA,L]
+    RewriteRule ^tutorials/?$ tutorials.php [QSA,L]
+    RewriteRule ^blog/?$      blog.php      [QSA,L]
+    RewriteRule ^about/?$     about.php     [QSA,L]
+    RewriteRule ^contact/?$   contact.php   [QSA,L]
+</IfModule>
+
+# ---- Default charset ----
+AddDefaultCharset UTF-8

@@ -1,0 +1,57 @@
+/* ============================================================
+   Home page — page-specific styles only.
+   Fonts, tokens, header, footer and shared components live in
+   site.css and must never be redefined here.
+   ============================================================ */
+
+/* ---- Hover/active states unique to this page (from the design's
+        style-hover attributes; !important beats inline styles) ---- */
+.hv86f556:hover { outline: 2px dashed #E76F51 !important; outline-offset: 5px !important; transform: translateY(-4px) !important; box-shadow: 0 18px 36px -20px rgba(31,42,68,.4) !important; }
+.hvcb9227:hover { transform: rotate(-1deg) scale(1.03) !important; box-shadow: 0 4px 10px rgba(31,42,68,.1), 0 26px 48px -20px rgba(31,42,68,.38) !important; }
+.hv43a5ee:hover { transform: rotate(1.5deg) scale(1.03) !important; box-shadow: 0 4px 9px rgba(31,42,68,.09), 0 20px 36px -18px rgba(31,42,68,.36) !important; }
+.hv62c49e:hover { transform: rotate(-1.5deg) scale(1.03) !important; box-shadow: 0 4px 9px rgba(31,42,68,.09), 0 20px 36px -18px rgba(31,42,68,.36) !important; }
+.hveb1e69:hover { transform: rotate(1deg) scale(1.03) !important; box-shadow: 0 4px 9px rgba(31,42,68,.09), 0 20px 36px -18px rgba(31,42,68,.36) !important; }
+.hv03017a:hover { background: #FBF7F2 !important; }
+.hv04e05c:hover { transform: translateY(-6px) !important; box-shadow: 0 4px 10px rgba(31,42,68,.07), 0 26px 52px -26px rgba(31,42,68,.5) !important; border-color: #E76F51 !important; }
+.hvfa4bd4:hover { background: #1F2A44 !important; color: #fff !important; }
+
+/* ---- Feature grid spans (desktop) — the design set these via JS ---- */
+@media (min-width: 900px) {
+  #featGrid > [data-span="7"] { grid-column: span 7; }
+  #featGrid > [data-span="6"] { grid-column: span 6; }
+  #featGrid > [data-span="5"] { grid-column: span 5; }
+  #featGrid > [data-offset="12"] { margin-top: 12px; }
+}
+
+/* ---- Mobile layout (the design's applyResponsive, as media queries;
+        !important is needed to override the desktop inline styles) ---- */
+@media (max-width: 899.98px) {
+  #heroTitle { font-size: 32px !important; }
+  #heroWrap { padding: 104px 20px 36px !important; }
+  #heroDesk { display: none !important; }
+  #heroPhone { position: static !important; width: 236px !important; transform: none !important; margin: 4px auto 0 !important; }
+  #heroArt { padding: 0 !important; }
+  #heroCtas { flex-direction: column !important; }
+  #heroCtas > a { width: 100%; }
+  [data-h2] { font-size: 28px !important; }
+
+  #featGrid { grid-template-columns: 1fr !important; gap: 16px !important; }
+
+  #toolboxGrid { grid-template-columns: 1fr !important; }
+  #toolboxGrid [data-toolbox-item] > span:first-child:not(:has(svg)) {
+    top: auto !important; bottom: 0 !important;
+    inset-inline-start: 10% !important; inset-inline-end: 10% !important;
+    width: auto !important; height: 2px !important;
+    background-image: repeating-linear-gradient(90deg, #E7DFD3 0 7px, transparent 7px 13px) !important;
+  }
+
+  #galPhone { position: static !important; transform: none !important; margin: 22px auto 0 !important; }
+  #galBoard { padding-bottom: 0 !important; }
+
+  /* testimonials become a snap scroller on mobile */
+  #testiRow {
+    overflow-x: auto; flex-wrap: nowrap !important; justify-content: flex-start !important;
+    scroll-snap-type: x mandatory; padding: 4px 2px 18px !important;
+  }
+  #testiRow [data-testi] { flex: 0 0 82% !important; scroll-snap-align: center; transform: none !important; }
+}
