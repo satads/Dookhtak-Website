@@ -7,16 +7,17 @@
 
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) ?? '/';
 
-// Serve real files (assets, content fragments, uploads) directly.
-if ($uri !== '/' && file_exists(__DIR__ . $uri) && !is_dir(__DIR__ . $uri)) {
-    return false;
-}
-
-// Block sensitive directories like .htaccess does on Apache.
+// Block sensitive directories like .htaccess does on Apache
+// (must run BEFORE static-file serving).
 if (preg_match('#^/(includes|database|cache)(/|$)#', $uri)) {
     http_response_code(403);
     echo 'Forbidden';
     return true;
+}
+
+// Serve real files (assets, content fragments, uploads) directly.
+if ($uri !== '/' && file_exists(__DIR__ . $uri) && !is_dir(__DIR__ . $uri)) {
+    return false;
 }
 
 // /blog/{slug}

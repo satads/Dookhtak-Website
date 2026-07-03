@@ -51,10 +51,11 @@
 9. **بلاگ فاز ۱:** آرشیو SSR از `includes/blog_sample_data.php` (فیلتر چیپ کلاینت‌ساید نمایشی)؛ صفحه مقاله = قالب استاتیک نمونه (`pricing-mistakes`) برای هر slug — فاز ۳ SSR کامل + ۴۰۴ برای slug ناموجود.
 10. **کانونیکال:** non-www (`dookhtak.ir`) — در .htaccess اعمال شده؛ ریدایرکت HTTPS حاضر ولی کامنت (تاگل مستند).
 11. **صفحه ۴۰۴ فارسی** (`404.php`) ساخته شد (router و فاز ۳ استفاده می‌کنند).
-12. **seedهای آموزش:** ردیف‌های ۲۶ آموزش با متادیتا seed شدند؛ `content_json='[]'` — فاز ۴ فرگمنت‌های نمونه را به JSON ساختاریافته مهاجرت می‌دهد. `video_type='aparat'` برای آیتم‌های دارای ویدئو (embed خالی تا فاز ۴). آیکون‌های دسته به نام Lucide نگاشت شدند (rocket, user, clipboard-list, image, message-circle, credit-card, receipt, settings).
+12. **seedهای آموزش:** ردیف‌های ۲۷ آموزش با متادیتا seed شدند؛ `content_json='[]'` — فاز ۴ فرگمنت‌های نمونه را به JSON ساختاریافته مهاجرت می‌دهد. `video_type='aparat'` برای آیتم‌های دارای ویدئو (embed خالی تا فاز ۴). آیکون‌های دسته به نام Lucide نگاشت شدند (rocket, user, clipboard-list, image, message-circle, credit-card, receipt, settings).
 13. **فرم تماس فاز ۱:** رفتار دمو (DEMO_MODE=true در page-contact.js با قرارداد `submitContactForm`) — فاز ۵ به `api/contact.php` وصل می‌کند. ساعت پاسخ‌گویی/تلفن/ایمیل صفحه تماس از settings.
 14. **کش صفحات:** زیرساخت در `includes/cache.php` (serve/start/flush) — `CACHE_ENABLED=false` تا فاز ۶.
-15. **امنیت پایه:** سشن سخت‌شده (httponly, SameSite=Lax, secure-on-HTTPS, regenerate)، rate-limit ورود (۵ خطا/IP/۱۵ دقیقه در `login_attempts`)، CSRF helpers، deny وب برای includes/database/cache، غیرفعال‌سازی PHP در uploads، هدرهای امنیتی.
+15. **style-focus:** خروجی دیزاین علاوه بر hover/active، در فرم‌ها `style-focus` داشت (تماس ×۵، جستجوی آموزش ×۲، ادمین ×۲۳ برای فاز ۲). به قواعد `:focus` در CSS صفحه تبدیل شد (page-contact.css، page-tutorials.css).
+16. **امنیت پایه:** سشن سخت‌شده (httponly, SameSite=Lax, secure-on-HTTPS, regenerate)، rate-limit ورود (۵ خطا/IP/۱۵ دقیقه در `login_attempts`)، CSRF helpers، deny وب برای includes/database/cache، غیرفعال‌سازی PHP در uploads، هدرهای امنیتی.
 
 ### دیتابیس
 - `database/schema.sql` — کل اسکیما برای همه فازها + seed همه محتوای placeholder (۹ پست، ۲۶ آموزش، ۱۴ FAQ، ۳ نظر مشتری، ۱۴ مقدار تعرفه، تنظیمات، seo_pages/seo_settings). تست ایمپورت روی MariaDB سالم بود.
@@ -69,6 +70,11 @@
 2. ایمپورت `database/schema.sql` در دیتابیس خالی.
 3. `php -S localhost:8080 router.php` (router فقط برای dev؛ روی Apache نیازی نیست).
 4. محدودیت‌های `php -S`: .htaccess اجرا نمی‌شود → هدرهای امنیتی، deny پوشه‌ها و rewrite ها را باید روی Apache واقعی جدا تست کرد (router.php رفتار rewrite و deny را شبیه‌سازی می‌کند).
+
+### نتیجه پذیرش فاز ۱
+- اسکریپت ممیزی (۴۰ چک): همه پاس — lint همه PHPها، رندر ۲۰۰ همه مسیرها، ۴۰۴ مسیر ناشناخته، صفر باقی‌مانده سینتکس قالب، ممیزی دارایی مرکزی (font-face فقط site.css، توکن‌ها فقط site.css، هر صفحه ≤۲ CSS و ≤۲ JS)، فوتر زنده از DB (تغییر settings → بلافاصله در خروجی)، ایمپورت schema در DB تازه (۱۵ جدول)، create_admin روی HTTP=403، مسیرهای حساس=403، active-state منو (exact و prefix برای /blog/{slug})، فرگمنت‌ها و ماژول SPA.
+- تست بصری هدلس (Chromium): اسکرین‌شات دسکتاپ هر ۸ صفحه + موبایل ۳۹۰px + درایور باز — مطابق دیزاین؛ بدون overflow افقی (scrollWidth=clientWidth=390).
+- SPA آموزش‌ها: هارنس jsdom با ۳۷/۳۷ چک پاس (deep-link، Back/Forward، جستجو، درایور، ویدئو، retry).
 
 ### نکات باز / تأیید لازم از علی
 - دامنه کانونیکال non-www فرض شد (`dookhtak.ir`).
