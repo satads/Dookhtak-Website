@@ -25,7 +25,7 @@
 | ۱ — Foundation & Static Conversion | COMPLETE | 2026-07-03 | `phase-1-complete` | ممیزی خودکار ۴۰/۴۰ پاس + اسکرین‌شات ۸ صفحه دسکتاپ/موبایل مطابق دیزاین + هارنس SPA آموزش‌ها ۳۷/۳۷ |
 | ۲ — Admin Shell, Auth, Settings & Media | COMPLETE | 2026-07-03 | `phase-2-complete` | چک‌لیست پذیرش ۵/۵ با شواهد اجرایی + رگرسیون ۴۰/۴۰ + دیف بصری ۱۶/۱۶ صفر پیکسل |
 | ۳ — Blog (Admin + Public SSR) | COMPLETE | 2026-07-03 | `phase-3-complete` | پذیرش ۵/۵ با E2E مرورگری + رگرسیون ۴۱/۴۱ + دیف بصری (۳ baseline عمداً به‌روزرسانی شد) |
-| ۴ — Tutorials Structured Builder | PENDING | — | — | — |
+| ۴ — Tutorials Structured Builder | COMPLETE | 2026-07-03 | `phase-4-complete` | پذیرش ۵/۵ (E2E مرورگری کامل بیلدر + SPA) + رگرسیون ۴۴/۴۴ + دیف بصری ۱۶/۱۶ صفر پیکسل + رندرر ۲۷/۲۷ برابر فرگمنت‌های اصلی |
 | ۵ — Pricing, FAQ, Testimonials, Contact & Mother Adapter | PENDING | — | — | — |
 | ۶ — SEO, Performance & Delivery | PENDING | — | — | — |
 
@@ -146,6 +146,38 @@
 - `includes/blog_sample_data.php` حذف شد (قانون فاز ۳).
 - **schema.sql بازتولید شد (اعلام بلند):** بدنه seed مقاله pricing-mistakes با نسخه سمانتیک متن کامل نمونه دیزاین جایگزین شد (فقط تگ‌های قابل‌تولید با Quill؛ باکس‌های aside/نکته/figure نمونه چون با ادیتور قابل ساخت نیستند حذف شدند). ایمپورت تازه تست شد.
 - Baseline های بصری به‌روزرسانی‌شده (عمداً): blog-desktop (حذف صفحه‌بندی placeholder → شیفت محتوا)، blog-post-desktop/mobile (بدنه = محتوای واقعی DB + ناوبری قبلی/بعدی داده‌محور). سکشن بلاگ خانه پایین‌تر از محدوده اسکرین‌شات است (تغییر متنی: عنوان دسته‌های واقعی به‌جای برچسب‌های استاتیک).
+
+---
+
+## فاز ۴ — انجام شد (تاریخ: ۲۰۲۶-۰۷-۰۳)
+
+### فرمت JSON آموزش‌ها (مشخصات الزامی — منبع حقیقت)
+`tutorials.content_json` — آرایه‌ای از قدم‌ها به ترتیب نمایش:
+```json
+[{
+  "title": "تیتر قدم (یک جمله اکشن)",
+  "text": "متن کوتاه قدم (متن ساده)",
+  "tip": "متن باکس «نکته» یا null",
+  "warning": "متن باکس «مواظب باش» یا null",
+  "image": "uploads/images/YYYY/MM/xxx.jpg یا null",
+  "image_alt": "متن جایگزین تصویر یا null",
+  "annotation": "توضیح کوتاه تصویر یا null"
+}]
+```
+- رندر annotation: بدون تصویر → قاب گوشی با pill «[TUT-SHOT: annotation]» (دقیقاً مثل فرگمنت‌های دیزاین)؛ با تصویر → تصویر داخل قاب + همان pill به‌صورت overlay پایین قاب؛ بدون هردو → بلوک اسکرین‌شات رندر نمی‌شود.
+`tutorials.troubleshooting_json` — `[{"q": "پرسش", "a": "پاسخ"}]` (آکاردئون «اگر مشکلی پیش آمد» + لینک تیکت به app_url).
+ستون‌های همراه: `intro_text` (متن ساده؛ پاراگراف قبل از قدم‌ها)، `prerequisites_html` (متن + فقط تگ `<a>` با href مجاز http/https/#؛ باکس «قبل از شروع»)، `video_type` (`none`/`aparat`) + `video_embed` (iframe سانیتایزشده — فقط aparat.com، ذخیره تمیز).
+رندرر واحد: `includes/tutorial_renderer.php::tutorial_render_fragment()` — تنها منبع مارکاپ آموزش (SPA و پیش‌نمایش ادمین هردو از همین).
+
+### تصمیم‌های فاز ۴
+1. **سانیتایزر آپارات** (`includes/aparat.php`): اولین iframe با src از aparat.com (https) → بازسازی تمیز با whitelist صفات (src/width/height/title/allow/allowfullscreen) + استایل ریسپانسیو؛ هر چیز دیگر (اسکریپت، هاست دیگر، event handler) دور ریخته می‌شود؛ نبود iframe معتبر → خطای فارسی و عدم ذخیره.
+2. **آیکون‌های lucide کاملاً self-hosted:** مجموعه ۶۰تایی curated از پکیج رسمی lucide-static → `assets/vendor/lucide/icons.js` (پیش‌نمایش زنده مودال دسته) + `includes/lucide_icons.php` (API و رندر سرورساید). ۸ آیکون seed عیناً path خروجی دیزاین را نگه داشتند (pixel-parity سایدبار). آیکون‌ها inner-SVG هستند نه فقط path d (پشتیبانی primitive ها).
+3. **API:** `api/tutorials.php` (دسته‌ها + منتشرشده‌ها به ترتیب sort_order + quick_start از settings) و `api/tutorial.php?slug=` (متا + فرگمنت رندرشده؛ درفت/ناشناس=404). SPA همه رفتارهای فاز ۱ را حفظ کرد + پنل خطا/تلاش دوباره برای بوت.
+4. **quick_start** در settings با کلید `tutorials_quick_start` (آرایه JSON از slug ها؛ فیلتر به منتشرشده‌ها در API) — schema بازتولید و ایمپورت تازه تست شد (اعلام بلند).
+5. **مهاجرت ۲۷ آموزش:** فرگمنت‌های نمونه → JSON ساختاریافته؛ تطبیق رندرر ۲۷/۲۷ (دیف نرمالایز‌شده). تفاوت‌های عمدی ثبت‌شده: (الف) کاور ویدئو برای ۱۲ آموزش video_type='none' که فرگمنت skeleton اشتباهاً کاور داشت حذف شد — DB مرجع است؛ (ب) SVGهای تزئینی فلش/دایره در ۲ فرگمنت غنی حذف شدند (قابل تولید با بیلدر نیستند)؛ (ج) «(— دقیقه)» skeleton ها با مدت واقعی جایگزین شد. صفحه /tutorials از دید کاربر بدون تغییر (دیف بصری ۰٪).
+6. **حذف داده استاتیک:** `content/*.html` و `assets/js/tutorials-data.js` حذف شدند (SPA فقط از API می‌خواند). چک ۱۰ رگرسیون به تست API ها به‌روزرسانی شد.
+7. بیلدر: JS اختصاصی صفحه در `assets/js/admin-tutorial-builder.js` (الگوی صفحه‌محور مثل page-*.js عمومی)؛ کارت‌های قدم با شماره کورال، جابه‌جایی بالا/پایین، حذف با مودال تأیید مرکزی؛ تصویر هر قدم از همان endpoint رسانه فاز ۲؛ سوییچ «ویدئو دارد» = انتخاب‌گر بدون ویدئو/آپارات پلن (دیزاین سوییچ داشت — ثبت تصمیم).
+8. پیش‌نمایش: POST فرم فعلی (بدون ذخیره) به `admin/tutorial-preview.php` در تب جدید — رندر با site.css واقعی + رفتارهای کاور ویدئو/آکاردئون؛ CSRF + سشن ادمین الزامی. منطق جمع‌آوری مشترک ذخیره/پیش‌نمایش در `includes/tutorial_form.php`.
 
 ### نکات باز / تأیید لازم از علی
 - دامنه کانونیکال non-www فرض شد (`dookhtak.ir`).

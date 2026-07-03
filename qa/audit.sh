@@ -76,9 +76,15 @@ echo "== 9. Nav active state =="
 curl -s http://localhost:8080/features | grep -q 'font-weight:700;color:var(--color-navy).*امکانات' && ok "/features marks امکانات active" || bad "/features active state wrong"
 curl -s http://localhost:8080/blog/pricing-mistakes | grep -q 'font-weight:700;color:var(--color-navy).*بلاگ' && ok "/blog/{slug} marks بلاگ active (prefix match)" || bad "blog post active state wrong"
 
-echo "== 10. Tutorials SPA assets =="
-code=$(curl -s -o /dev/null -w '%{http_code}' "http://localhost:8080/content/install-android.html")
-[ "$code" = 200 ] && ok "tutorial fragment fetch 200" || bad "fragment -> $code"
+echo "== 10. Tutorials SPA + API =="
+code=$(curl -s -o /dev/null -w '%{http_code}' "http://localhost:8080/api/tutorials.php")
+[ "$code" = 200 ] && ok "tutorials index API 200" || bad "index API -> $code"
+n=$(curl -s "http://localhost:8080/api/tutorials.php" | grep -o '"id"' | wc -l)
+[ "$n" -ge 27 ] && ok "index API lists categories+tutorials ($n ids)" || bad "index API too small ($n ids)"
+code=$(curl -s -o /dev/null -w '%{http_code}' "http://localhost:8080/api/tutorial.php?slug=first-order")
+[ "$code" = 200 ] && ok "fragment API 200" || bad "fragment API -> $code"
+code=$(curl -s -o /dev/null -w '%{http_code}' "http://localhost:8080/api/tutorial.php?slug=missing-x")
+[ "$code" = 404 ] && ok "fragment API unknown slug -> 404" || bad "fragment API unknown -> $code"
 curl -s http://localhost:8080/tutorials | grep -q 'type="module"' && ok "tutorials page loads module JS" || bad "tutorials module script missing"
 
 
