@@ -6,6 +6,7 @@
  * later phases.
  */
 require_once __DIR__ . '/includes/layout.php';
+public_boot(); // redirect middleware + page cache
 
 // Checklist — mirrors the design's checklistData (18 items).
 $checklist = [
@@ -32,8 +33,7 @@ $checklist = [
 $app_url = setting('app_url', 'https://app.dookhtak.ir');
 
 render_head([
-    'title' => 'امکانات دوختک | دوختک',
-    'description' => 'مدیریت سفارش، پرونده مشتری و اندازه‌ها، گالری نمونه‌کار، لینک پرداخت، حسابداری و باشگاه مشتریان — امکانات کامل دوختک.',
+    'page_key' => 'features',
     'css' => '/assets/css/page-features.css',
     'js' => '/assets/js/page-features.js',
 ]);

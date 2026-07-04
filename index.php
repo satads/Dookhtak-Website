@@ -6,6 +6,7 @@
  */
 require_once __DIR__ . '/includes/layout.php';
 require_once __DIR__ . '/includes/blog_lib.php';
+public_boot(); // redirect middleware + page cache
 
 // FAQ (home) — from the faqs table (managed in the admin).
 $faqs = [];
@@ -40,10 +41,15 @@ foreach (db()->query("SELECT quote, person_name, city, business_type FROM testim
 $app_url = setting('app_url', 'https://app.dookhtak.ir');
 
 render_head([
-    'title' => 'دوختک — سامانه ابری مدیریت خیاطی و مزون',
-    'description' => 'دوختک همه کارهای مدیریتی خیاطی را ساده می‌کند: سفارش، مشتری، گالری و حسابداری، همه روی یک میز.',
+    'page_key' => 'home',
+    'preload_font' => true,
     'css' => '/assets/css/page-home.css',
     'js' => '/assets/js/page-home.js',
+    'jsonld' => array_values(array_filter([
+        seo_org_jsonld(),
+        seo_website_jsonld(),
+        seo_faq_jsonld($faqs),
+    ])),
 ]);
 ?>
 <div dir="rtl" lang="fa" style="position:relative;min-height:100vh;background-color:#FAF8F4;background-image:linear-gradient(#EDEAE3 1px,transparent 1px),linear-gradient(90deg,#EDEAE3 1px,transparent 1px);background-size:46px 46px;overflow-x:hidden;line-height:1.6;">

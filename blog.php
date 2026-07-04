@@ -5,6 +5,7 @@
  * pagination. Markup is the approved design, unchanged.
  */
 require_once __DIR__ . '/includes/layout.php';
+public_boot(); // redirect middleware + page cache
 require_once __DIR__ . '/includes/blog_lib.php';
 
 $cats = blog_categories();
@@ -26,8 +27,7 @@ function blog_url(?string $cat, int $page = 1): string
 }
 
 render_head([
-    'title' => 'مجله دوختک | دوختک',
-    'description' => 'نکته‌ها و ترفندهای مدیریت خیاطی و مزون‌داری در مجله دوختک.',
+    'page_key' => 'blog',
     'css' => '/assets/css/page-blog.css',
     'js' => '/assets/js/page-blog.js',
 ]);

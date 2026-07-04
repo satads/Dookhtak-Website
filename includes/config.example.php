@@ -18,8 +18,8 @@ define('BASE_URL', 'https://dookhtak.ir');
 // ---- Session ----
 define('SESSION_NAME', 'dookhtak_admin');
 
-// ---- Page cache (enabled in Phase 6) ----
-define('CACHE_ENABLED', false);
+// ---- Page cache (anonymous visitors; flushed on every admin save) ----
+define('CACHE_ENABLED', true);
 define('CACHE_DIR', __DIR__ . '/../cache');
 
 // ---- Mother API (filled in Phase 5 from mother API docs) ----

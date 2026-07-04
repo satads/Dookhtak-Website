@@ -5,10 +5,10 @@
  * placeholders until the team provides final copy.
  */
 require_once __DIR__ . '/includes/layout.php';
+public_boot(); // redirect middleware + page cache
 
 render_head([
-    'title' => 'درباره دوختک | دوختک',
-    'description' => 'قصه دوختک و تیمی که آن را برای خیاط‌ها و مزون‌دارهای ایران می‌سازد.',
+    'page_key' => 'about',
     'css' => '/assets/css/page-about.css',
     'js' => '/assets/js/page-about.js',
 ]);

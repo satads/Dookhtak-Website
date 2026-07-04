@@ -27,7 +27,7 @@
 | ۳ — Blog (Admin + Public SSR) | COMPLETE | 2026-07-03 | `phase-3-complete` | پذیرش ۵/۵ با E2E مرورگری + رگرسیون ۴۱/۴۱ + دیف بصری (۳ baseline عمداً به‌روزرسانی شد) |
 | ۴ — Tutorials Structured Builder | COMPLETE | 2026-07-03 | `phase-4-complete` | پذیرش ۵/۵ (E2E مرورگری کامل بیلدر + SPA) + رگرسیون ۴۴/۴۴ + دیف بصری ۱۶/۱۶ صفر پیکسل + رندرر ۲۷/۲۷ برابر فرگمنت‌های اصلی |
 | ۵ — Pricing, FAQ, Testimonials, Contact & Mother Adapter | COMPLETE | 2026-07-04 | `phase-5-complete` | پذیرش ۵/۵ با شواهد اجرایی (رفت‌وبرگشت تعرفه، نرمال‌سازی موبایل فارسی + محدودیت نرخ ۶اُم=۴۲۹، هانی‌پات، شبیه‌سازی خطای فوروارد سامانه مادر، محدوده‌بندی FAQ/نظرات) + رگرسیون ۵۶/۵۶ + دیف بصری ۱۶/۱۶ صفر پیکسل |
-| ۶ — SEO, Performance & Delivery | PENDING | — | — | — |
+| ۶ — SEO, Performance & Delivery | COMPLETE | 2026-07-04 | `phase-6-complete` | پذیرش ۶/۶ با شواهد اجرایی (متا/canonical/OG/JSON-LD معتبر؛ sitemap با پنجره کش؛ ریدایرکت ۳۰۱؛ تزریق اسکریپت هدر؛ کش صفحه + ابطال؛ gzip/فونت/دیفر) + رگرسیون ۶۸/۶۸ + دیف بصری ۱۶/۱۶ صفر پیکسل (لایه سئو/کش هیچ تغییر بصری نداد) |
 
 قانون: هر فاز فقط با پیام صریح «APPROVED — proceed to phase N+1» باز می‌شود. مرجع محدوده هر فاز: `BUILD_PLAN.md` (منبع واحد حقیقت).
 
@@ -220,3 +220,46 @@
 
 ### نکات باز فاز ۵ / تأیید لازم از علی
 - بلوک `MOTHER_API` هنوز placeholder است — پر شدن `base_url`/`endpoint`/`api_key`/`instance_id` و `enabled=true` منتظر مستندات API سامانه مادر است.
+
+---
+
+## فاز ۶ — انجام شد (تاریخ: ۲۰۲۶-۰۷-۰۴) — فاز نهایی
+
+### دامنه فاز
+لایه سئو (ادمین + عمومی)، sitemap/robots، فعال‌سازی کش صفحه، بهینه‌سازی عملکرد، سخت‌سازی تحویل. تغییر مارک‌آپ عمومی فقط جایی که سئو/perf لازم داشت — **صفر تغییر بصری** (دیف ۱۶/۱۶).
+
+### فایل‌های افزوده/تغییر
+- `includes/seo.php` (جدید) — منبع واحد سئو: `seo_settings()`/`seo_page()` (کش per-request)، `seo_meta()` (زنجیره fallback عنوان/توضیح/canonical/og)، `seo_emit_head()`/`seo_emit_body_scripts()`، سازنده‌های JSON-LD (`seo_org_jsonld`/`seo_website_jsonld`/`seo_faq_jsonld`/`seo_breadcrumb_jsonld`)، `seo_redirect_check()` و `public_boot()` (ریدایرکت + serve/capture کش).
+- `includes/layout.php` — `render_head()` بازنویسی شد: title/description/canonical/OG/twitter از `seo_meta()`؛ تزریق `head_scripts`؛ بلوک‌های JSON-LD؛ `preload_font`؛ `render_foot()` `body_scripts` را تزریق می‌کند.
+- صفحات عمومی (index/features/pricing/tutorials/blog/about/contact/blog-post/404) — `public_boot()` در ابتدای هر صفحه + `page_key` (عنوان/توضیح داینامیک از `seo_pages`). خانه: Organization+WebSite+FAQPage + preload فونت. پست: `og:type=article` + BlogPosting + BreadcrumbList + canonical=post_url. ۴۰۴: `seo_redirect_check()` + `robots noindex`.
+- `sitemap.php` (جدید) — `/sitemap.xml`: ۷ صفحه ثابت + پست‌های published (lastmod از updated_at)؛ کش دیسکی ۱ ساعته در `cache/sitemap.xml`.
+- `robots.php` (جدید) — `/robots.txt` از `seo_settings.robots_txt`.
+- `admin/seo.php` (جدید) — ۴ تب سروری: متای صفحات (`seo_pages`)، عمومی (پسوند/توضیح/og پیش‌فرض/robots.txt)، اسکریپت‌ها (head/body — HTML مورد اعتماد ادمین)، ریدایرکت‌ها (CRUD 301/302). CSRF + `cache_flush()` روی همه مسیرها. آیتم نو `seo` سایدبار فعال شد.
+- `router.php` — مسیرهای `/sitemap.xml` و `/robots.txt` (معادل rewrite آپاچی).
+- `.htaccess` — `ErrorDocument 404 /404.php`؛ gzip/deflate؛ `Cache-Control` طولانی برای assets/uploads و no-cache برای HTML؛ rewrite برای sitemap/robots؛ (توگل HTTPS از قبل موجود).
+- `includes/config.php` + `config.example.php` — `CACHE_ENABLED = true`.
+- `includes/site_footer.php` — `loading="lazy"` روی لوگوی فوتر (زیر تا).
+- `database/schema.sql` — **seedهای `seo_pages` به‌روزرسانی شد**: `meta_title` هر صفحه = عنوان کامل فعلی (پسوند ` | دوختک` در همه به‌جز خانه که برند-اول است). بدون تغییر ساختاری. (Fresh-import: ۱۵ جدول.)
+- `qa/audit.sh` — چک ۱۱ اصلاح شد (canonical/OG/دامنه خودی و پوشه `cache/` استثنا)، چک ۵ بعد از نوشتن مستقیم DB کش را flush می‌کند (چون کش فعال شد)، بخش ۱۳ (فاز ۶) افزوده شد → **۶۸ چک**.
+
+### تصمیم‌های فاز ۶
+- **مدل عنوان:** `seo_pages.meta_title` = کل `<title>` (WYSIWYG در ادمین). پسوند `site_title_suffix` فقط برای پست‌های بلاگ و به‌عنوان fallback صفحات بدون متا. خانه عمداً بدون پسوند (برند-اول). این باعث شد عنوان‌های رندرشده بایت‌به‌بایت با نسخه قبلی یکی بمانند.
+- **زنجیره og:image:** og صفحه/پست ← og پیش‌فرض seo_settings ← لوگو (`Logo01-NEW.png`).
+- **head_scripts/body_scripts** HTML مورد اعتماد ادمین (آنالیتیکس/تگ تأیید) و بدون escape خروجی می‌گیرند — همان مدل اعتماد `body_html` بلاگ و `enamad_code`.
+- **کش صفحه:** فقط GET بدون کوکی نشست ادمین؛ TTL یک ساعت؛ `cache_flush()` روی **همه** ذخیره‌های مؤثر بر عمومی (بلاگ/آموزش/دسته/FAQ/نظر/تعرفه/تنظیمات/سئو). فایل‌های بدون flush فقط ادمین‌محورند (account/inbox/media — روی HTML عمومی اثر ندارند).
+- **sitemap** کش ۱ ساعته جدا دارد (نه page cache): پست تازه‌منتشرشده حداکثر تا ۱ ساعت در sitemap ظاهر می‌شود (طبق پلن).
+- **WebP عمداً پیاده نشد** — تصاویر عمومی عمدتاً CSS/SVG + لوگو PNG کوچک‌اند؛ برای تضمین حفظ پیکسل‌به‌پیکسل دیزاین تأییدشده، تبدیل WebP به بهینه‌سازی اختیاری پس از انتشار موکول شد (در runbook تحویل ذکر شد). بردهای امن perf (gzip، کش دور، preload/swap فونت، defer JS، lazy زیرِ تا) اعمال شد.
+
+### شواهد پذیرش فاز ۶ (اجرا شده)
+1. view-source خانه/پست/تعرفه: title/canonical/OG/twitter درست؛ ۳ بلوک JSON-LD خانه (Org+WebSite+FAQPage) و ۲ بلوک پست (BlogPosting+BreadcrumbList) با `json.loads` معتبر.
+2. `/sitemap.xml` = ۱۶ URL (۷ ثابت + ۹ پست)؛ پست جدید بلافاصله در sitemap کش‌شده نیامد (۱۶ ماند) و پس از انقضای پنجره کش ظاهر شد (۱۷).
+3. ریدایرکت ادمین `/old-test → /blog` = ۳۰۱ (و ۳۰۲ + مقصد خارجی هم تست شد)؛ افزودن/حذف از پنل.
+4. اسکریپت تزریق‌شده ادمین در `<head>` همه صفحات عمومی ظاهر شد؛ بعد از پاک‌کردن حذف شد.
+5. کش: درخواست دوم ناشناس از کش (محتوای stale بعد از تغییر مستقیم DB بدون flush)، و `cache_flush()` باطل کرد (محتوای fresh)؛ ادمین با کوکی نشست همیشه نسخه زنده می‌بیند و درخواستش کش نمی‌شود.
+6. perf: gzip (۴ دستور DEFLATE)، `Cache-Control` تا یک‌ساله assets، `font-display: swap` (۳ @font-face)، preload فونت خانه، JS با defer، بدون تکرار asset مشترک (۲css/۲js).
+- امنیت/تحویل: `admin/seo.php` احراز هویت (۳۰۲)؛ `/includes/seo.php`,`cache.php` و `/cache/sitemap.xml` → ۴۰۳؛ بلوک مسیرهای حساس و توگل HTTPS در `.htaccess`.
+
+### نکات باز فاز ۶ / تأیید لازم از علی
+- **ادغام به `main`**: طبق پلن فقط پس از تأیید نهایی فاز ۶ انجام می‌شود (هنوز روی برنچ فیچر).
+- در سرور واقعی: کپی `config.example.php` به `config.php`، اجرا و سپس **حذف** `create_admin.php`، دسترسی نوشتن `/uploads` و `/cache`، فعال‌سازی توگل HTTPS بعد از نصب SSL، ثبت sitemap در Search Console (از تب اسکریپت‌های سئو). جزئیات کامل در runbook گزارش.
+- WebP (اختیاری، پساانتشار) و پرکردن `MOTHER_API` (منتظر مستندات) دو کار باز باقی‌مانده‌اند.

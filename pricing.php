@@ -5,6 +5,7 @@
  * DB read fails. Markup is the approved design, converted 1:1.
  */
 require_once __DIR__ . '/includes/layout.php';
+public_boot(); // redirect middleware + page cache
 
 $app_url = setting('app_url', 'https://app.dookhtak.ir');
 
@@ -100,8 +101,7 @@ foreach (db()->query("SELECT question, answer_html FROM faqs WHERE page = 'prici
 }
 
 render_head([
-    'title' => 'تعرفه‌های دوختک | دوختک',
-    'description' => 'تعرفه پلن پایه و پلن ویژه دوختک به‌همراه ماژول‌های تکمیلی؛ ۱۰ روز تست رایگان بدون کارت بانکی.',
+    'page_key' => 'pricing',
     'css' => '/assets/css/page-pricing.css',
     'js' => '/assets/js/page-pricing.js',
 ]);

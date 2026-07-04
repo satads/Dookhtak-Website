@@ -26,6 +26,16 @@ if (preg_match('#^/admin/?$#', $uri)) {
     return true;
 }
 
+// SEO endpoints (Apache maps these via .htaccess rewrites).
+if ($uri === '/sitemap.xml') {
+    require __DIR__ . '/sitemap.php';
+    return true;
+}
+if ($uri === '/robots.txt') {
+    require __DIR__ . '/robots.php';
+    return true;
+}
+
 // /blog/{slug}
 if (preg_match('#^/blog/([a-z0-9-]+)/?$#', $uri, $m)) {
     $_GET['slug'] = $m[1];

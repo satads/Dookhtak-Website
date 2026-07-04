@@ -2,10 +2,13 @@
 /** Styled Persian 404 page. */
 require_once __DIR__ . '/includes/layout.php';
 
+seo_redirect_check(); // an admin redirect may claim an otherwise-unknown path
+
 http_response_code(404);
 render_head([
     'title' => 'صفحه پیدا نشد | دوختک',
     'description' => 'صفحه‌ای که دنبالش بودید پیدا نشد.',
+    'robots' => 'noindex, follow',
 ]);
 ?>
 <div dir="rtl" lang="fa" style="position:relative;min-height:100vh;background-color:#FAF8F4;background-image:linear-gradient(#EDEAE3 1px,transparent 1px),linear-gradient(90deg,#EDEAE3 1px,transparent 1px);background-size:46px 46px;overflow-x:hidden;line-height:1.6;">

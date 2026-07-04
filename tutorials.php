@@ -8,10 +8,10 @@
  * the API. Markup is the approved design, converted 1:1.
  */
 require_once __DIR__ . '/includes/layout.php';
+public_boot(); // redirect middleware + page cache
 
 render_head([
-    'title' => 'مرکز آموزش دوختک | دوختک',
-    'description' => 'آموزش قدم‌به‌قدم کار با دوختک: از نصب و ثبت‌نام تا سفارش، گالری، پیامک، پرداخت و حسابداری.',
+    'page_key' => 'tutorials',
     'css' => '/assets/css/page-tutorials.css',
     'js' => '/assets/js/page-tutorials.js',
     'js_module' => true,

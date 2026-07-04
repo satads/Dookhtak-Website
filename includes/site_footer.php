@@ -36,7 +36,7 @@ foreach ([
   <div style="max-width:1180px;margin-inline:auto;padding:54px 24px 26px;">
     <div style="display:flex;flex-wrap:wrap;gap:40px;justify-content:space-between;">
       <div style="flex:1 1 260px;max-width:320px;">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;"><img src="/assets/images/Logo01-NEW.png" style="height:36px;filter:brightness(0) invert(1);" alt=""><span style="font-size:22px;font-weight:700;color:#fff;">دوختک</span></div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;"><img src="/assets/images/Logo01-NEW.png" loading="lazy" style="height:36px;filter:brightness(0) invert(1);" alt=""><span style="font-size:22px;font-weight:700;color:#fff;">دوختک</span></div>
         <p style="font-size:14px;line-height:1.9;color:#8b95af;margin:0;">سامانه ابری مدیریت خیاطی و مزون؛ سفارش، مشتری، گالری و حساب، همه روی یک میز.</p>
       </div>
       <div style="flex:1 1 140px;">

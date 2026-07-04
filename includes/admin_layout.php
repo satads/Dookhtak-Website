@@ -42,7 +42,7 @@ function admin_nav(): array
         ['pricing',  'تعرفه‌ها',           $icons['price'],    '/admin/pricing.php',   true],
         ['inbox',    'پیام‌های دریافتی',   $icons['inbox'],    '/admin/inbox.php',     true],
         ['media',    'رسانه‌ها',           $icons['media'],    '/admin/media.php',     true],
-        ['seo',      'سئو',               $icons['seo'],      '#',                    false],
+        ['seo',      'سئو',               $icons['seo'],      '/admin/seo.php',       true],
         ['settings', 'تنظیمات سایت',      $icons['settings'], '/admin/settings.php',  true],
         ['account',  'حساب کاربری',       $icons['user'],     '/admin/account.php',   true],
     ];

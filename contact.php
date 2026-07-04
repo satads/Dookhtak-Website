@@ -7,6 +7,7 @@
  * /assets/js/page-contact.js (demo mode until Phase 5 wires the API).
  */
 require_once __DIR__ . '/includes/layout.php';
+public_boot(); // redirect middleware + page cache
 
 $app_url = setting('app_url', 'https://app.dookhtak.ir');
 $support_phone = setting('support_phone', '۰۲۱-۱۲۳۴۵۶۷۸');
@@ -22,8 +23,7 @@ if (strpos($tel_digits, '0') === 0) {
 $support_phone_tel = 'tel:' . $tel_digits;
 
 render_head([
-    'title' => 'تماس با دوختک | دوختک',
-    'description' => 'برای مشاوره رایگان و شروع کار با دوختک با ما در تماس باشید.',
+    'page_key' => 'contact',
     'css' => '/assets/css/page-contact.css',
     'js' => '/assets/js/page-contact.js',
 ]);

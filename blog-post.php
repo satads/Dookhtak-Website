@@ -7,6 +7,7 @@
  */
 require_once __DIR__ . '/includes/layout.php';
 require_once __DIR__ . '/includes/blog_lib.php';
+public_boot(); // redirect middleware + page cache
 
 $slug = (string) ($_GET['slug'] ?? '');
 $post = $slug !== '' ? blog_post_by_slug($slug) : null;
@@ -22,12 +23,50 @@ $post_url = rtrim(BASE_URL, '/') . '/blog/' . $post['slug'];
 $share_tg = 'https://t.me/share/url?url=' . rawurlencode($post_url);
 $share_wa = 'https://wa.me/?text=' . rawurlencode($post_url);
 $pub_date = date('Y-m-d', strtotime($post['published_at']));
+$suffix = seo_setting('site_title_suffix', ' | دوختک');
+
+// og:image / BlogPosting image: post cover if set, else the SEO fallback chain.
+$post_og = '';
+if (!empty($post['cover_image'])) {
+    $post_og = preg_match('#^https?://#', $post['cover_image'])
+        ? $post['cover_image']
+        : rtrim(BASE_URL, '/') . '/' . ltrim($post['cover_image'], '/');
+}
+
+$blogposting = [
+    '@context'         => 'https://schema.org',
+    '@type'            => 'BlogPosting',
+    'headline'         => $post['title'],
+    'description'      => $post['seo_description'] ?: ($post['excerpt'] ?? ''),
+    'datePublished'    => date('c', strtotime($post['published_at'])),
+    'dateModified'     => date('c', strtotime($post['updated_at'] ?: $post['published_at'])),
+    'mainEntityOfPage' => ['@type' => 'WebPage', '@id' => $post_url],
+    'author'           => ['@type' => 'Organization', 'name' => 'دوختک'],
+    'publisher'        => [
+        '@type' => 'Organization',
+        'name'  => 'دوختک',
+        'logo'  => ['@type' => 'ImageObject', 'url' => rtrim(BASE_URL, '/') . '/assets/images/Logo01-NEW.png'],
+    ],
+];
+if ($post_og !== '') {
+    $blogposting['image'] = $post_og;
+}
+
+$crumbs = [['خانه', '/'], ['مجله', '/blog']];
+if (!empty($post['cat_title'])) {
+    $crumbs[] = [$post['cat_title'], '/blog?cat=' . $post['cat_slug']];
+}
+$crumbs[] = [$post['title'], $post_url];
 
 render_head([
-    'title' => ($post['seo_title'] ?: $post['title']) . ' | دوختک',
+    'title'       => ($post['seo_title'] ?: $post['title']) . $suffix,
     'description' => $post['seo_description'] ?: ($post['excerpt'] ?? ''),
-    'css' => '/assets/css/page-blog-post.css',
-    'js' => '/assets/js/page-blog-post.js',
+    'canonical'   => $post_url,
+    'og_type'     => 'article',
+    'og_image'    => $post_og ?: null,
+    'css'         => '/assets/css/page-blog-post.css',
+    'js'          => '/assets/js/page-blog-post.js',
+    'jsonld'      => [$blogposting, seo_breadcrumb_jsonld($crumbs)],
 ]);
 ?>
 <div dir="rtl" lang="fa" style="position:relative;min-height:100vh;background-color:#FAF8F4;background-image:linear-gradient(#EDEAE3 1px,transparent 1px),linear-gradient(90deg,#EDEAE3 1px,transparent 1px);background-size:46px 46px;overflow-x:hidden;line-height:1.6;">

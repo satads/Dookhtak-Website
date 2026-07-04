@@ -1,8 +1,9 @@
 # Real configuration lives only on the server
 includes/config.php
 
-# Runtime artifacts
-cache/page_*.html
+# Runtime artifacts (generated page cache + sitemap); keep the deny-all .htaccess
+cache/*
+!cache/.htaccess
 uploads/images/**
 !uploads/images/.gitkeep
 
