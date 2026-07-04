@@ -7,16 +7,11 @@
 require_once __DIR__ . '/includes/layout.php';
 require_once __DIR__ . '/includes/blog_lib.php';
 
-// FAQ (home) — matches the `faqs` seeds for page='home'.
-$faqs = [
-    ['q' => 'اطلاعاتم کجا ذخیره می‌شود؟ امن است؟', 'a' => 'همه اطلاعات شما روی سرورهای امن ابری نگهداری و به‌طور خودکار پشتیبان‌گیری می‌شود؛ فقط خودتان به آن دسترسی دارید.'],
-    ['q' => 'به اینترنت قوی نیاز دارم؟', 'a' => 'نه. دوختک با اینترنت معمولی موبایل هم به‌خوبی کار می‌کند.'],
-    ['q' => 'اگر با نرم‌افزار راحت نباشم چه؟', 'a' => 'آموزش و پشتیبانی کامل فارسی داریم و قدم‌به‌قدم کنارتان هستیم تا راه بیفتید.'],
-    ['q' => 'بعد از ۱۰ روز رایگان چه می‌شود؟', 'a' => 'بعد از پایان دوره رایگان می‌توانید یکی از پلن‌ها را انتخاب کنید؛ اطلاعاتتان محفوظ می‌ماند.'],
-    ['q' => 'روی گوشی کار می‌کند؟', 'a' => 'بله، روی موبایل، تبلت و کامپیوتر بدون نصب برنامه اجرا می‌شود.'],
-    ['q' => 'می‌توانم سایت را روی دامنه خودم داشته باشم؟', 'a' => 'بله، دوختک می‌تواند روی دامنه اختصاصی خودتان بالا بیاید.'],
-    ['q' => 'هر وقت بخواهم می‌توانم لغو کنم؟', 'a' => 'بله، هیچ قراردادی نیست و هر زمان می‌توانید اشتراک را لغو کنید.'],
-];
+// FAQ (home) — from the faqs table (managed in the admin).
+$faqs = [];
+foreach (db()->query("SELECT question, answer_html FROM faqs WHERE page = 'home' ORDER BY sort_order, id") as $faq_row) {
+    $faqs[] = ['q' => $faq_row['question'], 'a' => $faq_row['answer_html']];
+}
 
 // Before/after comparison rows (dark section).
 $compare = [
@@ -27,12 +22,20 @@ $compare = [
     ['before' => 'دخل‌وخرج را آخر ماه با ماشین‌حساب درمی‌آوری', 'after' => 'گزارش درآمد و هزینه لحظه‌ای آماده است'],
 ];
 
-// Testimonials — matches the `testimonials` seeds.
-$testimonials = [
-    ['quote' => 'دفترهای سفارشم را کنار گذاشتم. حالا هر سفارش با سررسیدش جلوی چشمم است و دیگر چیزی از قلم نمی‌افتد.', 'name' => 'نرگس ح.', 'meta' => 'تهران — مزون مانتو', 'rot' => '-1.5deg'],
-    ['quote' => 'مشتری‌ها گالری کارهایم را در گوشی می‌بینند و راحت انتخاب می‌کنند. سفارش‌هایم بیشتر شده.', 'name' => 'فاطمه ر.', 'meta' => 'اصفهان — خیاطی زنانه', 'rot' => '1deg'],
-    ['quote' => 'لینک پرداخت را که فرستادم، دیگر دنبال کارت‌به‌کارت و پیگیری نیستم.', 'name' => 'سمیرا ک.', 'meta' => 'شیراز — تعمیرات پوشاک', 'rot' => '-.75deg'],
-];
+// Testimonials — published rows from the admin; the design's three
+// card rotations cycle by position.
+$testimonials = [];
+$testi_rots = ['-1.5deg', '1deg', '-.75deg'];
+$testi_i = 0;
+foreach (db()->query("SELECT quote, person_name, city, business_type FROM testimonials WHERE status = 'published' ORDER BY sort_order, id") as $t_row) {
+    $testimonials[] = [
+        'quote' => $t_row['quote'],
+        'name'  => $t_row['person_name'],
+        'meta'  => implode(' — ', array_filter([$t_row['city'], $t_row['business_type']])),
+        'rot'   => $testi_rots[$testi_i % 3],
+    ];
+    $testi_i++;
+}
 
 $app_url = setting('app_url', 'https://app.dookhtak.ir');
 

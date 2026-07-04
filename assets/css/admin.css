@@ -135,4 +135,10 @@ body.admin :focus-visible { outline: 2px solid #E76F51; outline-offset: 2px; }
   /* tables become stacked cards */
   [data-rowgrid] { display: block !important; padding: 14px 16px !important; }
   [data-rowgrid] > * { display: block; margin-bottom: 4px; }
+  /* inbox: two panes become list -> detail with back */
+  #inboxRow { flex-direction: column; }
+  #inboxList { flex: 1 1 auto !important; width: 100%; }
+  #inboxDetail { display: none; width: 100%; }
+  .inbox-detail-open #inboxList { display: none; }
+  .inbox-detail-open #inboxDetail { display: block; }
 }

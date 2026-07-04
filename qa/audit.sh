@@ -99,6 +99,37 @@ srchits=$(grep -rnoE '@import[^;]*https?://|url\(https?://[^)]*\)|<script[^>]+sr
 if [ -n "$srchits" ]; then bad "source tree references external asset: $(echo "$srchits" | head -1)"; EXT_FAIL=1; fi
 [ "$EXT_FAIL" = 0 ] && ok "no external CDN/asset references (public + admin + source)"
 
+echo "== 12. Phase 5 — contact API, admin surface, DB-driven content =="
+# Contact API method guard (non-destructive).
+code=$(curl -s -o /dev/null -w '%{http_code}' http://localhost:8080/api/contact.php)
+[ "$code" = 405 ] && ok "GET /api/contact.php -> 405" || bad "GET /api/contact.php -> $code"
+# Honeypot: filled 'company' -> ok:true and NO row stored.
+cnt_before=$(mysql --default-character-set=utf8mb4 -u dookhtak_user -plocaltest dookhtak_site -N -B -e 'SELECT COUNT(*) FROM submissions' 2>/dev/null)
+hp=$(curl -s -X POST http://localhost:8080/api/contact.php -H 'Content-Type: application/json' \
+  --data '{"name":"bot","phone":"09121112233","company":"x","message":"m"}')
+cnt_after=$(mysql --default-character-set=utf8mb4 -u dookhtak_user -plocaltest dookhtak_site -N -B -e 'SELECT COUNT(*) FROM submissions' 2>/dev/null)
+{ echo "$hp" | grep -q '"ok":true' && [ "$cnt_before" = "$cnt_after" ]; } \
+  && ok "honeypot -> ok:true, no row stored" || bad "honeypot mishandled (before=$cnt_before after=$cnt_after resp=$hp)"
+# Invalid phone -> 422 (no row; count unchanged from the honeypot check).
+code=$(curl -s -o /dev/null -w '%{http_code}' -X POST http://localhost:8080/api/contact.php \
+  -H 'Content-Type: application/json' --data '{"name":"y","phone":"123","message":"m"}')
+cnt_end=$(mysql --default-character-set=utf8mb4 -u dookhtak_user -plocaltest dookhtak_site -N -B -e 'SELECT COUNT(*) FROM submissions' 2>/dev/null)
+{ [ "$code" = 422 ] && [ "$cnt_after" = "$cnt_end" ]; } && ok "invalid phone -> 422, no row" || bad "invalid phone -> $code (rows $cnt_after->$cnt_end)"
+# New admin pages require auth (unauthenticated -> 302 to /admin/).
+for p in pricing faq testimonials inbox; do
+  code=$(curl -s -o /dev/null -w '%{http_code}' "http://localhost:8080/admin/$p.php")
+  [ "$code" = 302 ] && ok "unauth /admin/$p.php -> 302" || bad "unauth /admin/$p.php -> $code (should redirect to login)"
+done
+# Adapter include not web-served.
+code=$(curl -s -o /dev/null -w '%{http_code}' http://localhost:8080/includes/MotherApiClient.php)
+[ "$code" = 403 ] && ok "/includes/MotherApiClient.php -> 403" || bad "/includes/MotherApiClient.php -> $code"
+# Public content is DB-driven: FAQ (home 7 / pricing 7) and testimonials (3) render.
+n=$(curl -s http://localhost:8080/ | grep -c 'data-faq-item'); [ "$n" -ge 1 ] && ok "home renders $n FAQ items from DB" || bad "home FAQ items missing"
+n=$(curl -s http://localhost:8080/ | grep -c 'data-testi '); [ "$n" -ge 1 ] && ok "home renders $n testimonials from DB" || bad "home testimonials missing"
+n=$(curl -s http://localhost:8080/pricing | grep -c 'data-faq-item'); [ "$n" -ge 1 ] && ok "pricing renders $n FAQ items from DB" || bad "pricing FAQ items missing"
+# Pricing values come from pricing_values: yearly total appears Persian-formatted.
+curl -s http://localhost:8080/pricing | grep -q '۲٬۶۹۰٬۰۰۰' && ok "pricing shows sub_12m from pricing_values" || bad "pricing sub_12m not rendered from DB"
+
 echo
 echo "RESULT: $PASS passed, $FAIL failed"
 exit $FAIL

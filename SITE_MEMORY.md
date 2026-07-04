@@ -26,7 +26,7 @@
 | ۲ — Admin Shell, Auth, Settings & Media | COMPLETE | 2026-07-03 | `phase-2-complete` | چک‌لیست پذیرش ۵/۵ با شواهد اجرایی + رگرسیون ۴۰/۴۰ + دیف بصری ۱۶/۱۶ صفر پیکسل |
 | ۳ — Blog (Admin + Public SSR) | COMPLETE | 2026-07-03 | `phase-3-complete` | پذیرش ۵/۵ با E2E مرورگری + رگرسیون ۴۱/۴۱ + دیف بصری (۳ baseline عمداً به‌روزرسانی شد) |
 | ۴ — Tutorials Structured Builder | COMPLETE | 2026-07-03 | `phase-4-complete` | پذیرش ۵/۵ (E2E مرورگری کامل بیلدر + SPA) + رگرسیون ۴۴/۴۴ + دیف بصری ۱۶/۱۶ صفر پیکسل + رندرر ۲۷/۲۷ برابر فرگمنت‌های اصلی |
-| ۵ — Pricing, FAQ, Testimonials, Contact & Mother Adapter | PENDING | — | — | — |
+| ۵ — Pricing, FAQ, Testimonials, Contact & Mother Adapter | COMPLETE | 2026-07-04 | `phase-5-complete` | پذیرش ۵/۵ با شواهد اجرایی (رفت‌وبرگشت تعرفه، نرمال‌سازی موبایل فارسی + محدودیت نرخ ۶اُم=۴۲۹، هانی‌پات، شبیه‌سازی خطای فوروارد سامانه مادر، محدوده‌بندی FAQ/نظرات) + رگرسیون ۵۶/۵۶ + دیف بصری ۱۶/۱۶ صفر پیکسل |
 | ۶ — SEO, Performance & Delivery | PENDING | — | — | — |
 
 قانون: هر فاز فقط با پیام صریح «APPROVED — proceed to phase N+1» باز می‌شود. مرجع محدوده هر فاز: `BUILD_PLAN.md` (منبع واحد حقیقت).
@@ -184,3 +184,39 @@
 - سال فوتر داینامیک جلالی شد (دیزاین «۱۴۰۴» ثابت داشت).
 - متن ساعت پاسخ‌گویی صفحه تماس از settings می‌آید (براکت placeholder دیزاین حذف شد).
 - عنوان/توضیح متای فاز ۱ موقت است؛ فاز ۶ لایه SEO کامل را می‌آورد.
+
+---
+
+## فاز ۵ — انجام شد (تاریخ: ۲۰۲۶-۰۷-۰۴)
+
+### دامنه فاز
+تعرفه (ادمین + عمومی از DB)، سؤالات متداول (ادمین دو-تب home/pricing + عمومی)، نظرات مشتریان (ادمین + عمومی)، بک‌اند تماس (`api/contact.php`)، صندوق پیام‌ها (`admin/inbox.php` دو-پنله)، آداپتور سامانه مادر (`includes/MotherApiClient.php`).
+
+### فایل‌های افزوده/تغییر
+- `admin/pricing.php` — فرم گروه‌بندی‌شده روی `pricing_values`؛ ورودی‌ها جداکننده هزارگان فارسی زنده؛ درصدها ۰–۹۹ کپ؛ CSRF + `cache_flush()`.
+- `admin/faq.php` — دو تب سروری (`?page=home|pricing`)؛ CRUD مودال + ورودی ترتیب inline auto-submit؛ پاسخ‌ها به‌صورت متن ساده ذخیره و در عمومی با `e()` escape می‌شوند.
+- `admin/testimonials.php` — گرید کارت + CRUD مودال؛ `status` (published/draft)؛ فقط published در صفحه اصلی.
+- `api/contact.php` — JSON in/out؛ هانی‌پات (`company`/`hp`/`website` → موفقیت جعلی، بدون ذخیره)؛ نرمال‌سازی شماره (`en_digits` + حذف فاصله/خط تیره) با اعتبارسنجی `^09\d{9}$`؛ محدودیت نرخ ۵/IP/ساعت → ۴۲۹؛ **ذخیره‌ی محلی اول**، سپس فوروارد در صورت فعال بودن آداپتور.
+- `includes/MotherApiClient.php` — کلاس آداپتور روی بلوک `MOTHER_API` در `includes/config.php` (پیش‌فرض `enabled=false`، placeholder). `mother_forward_submission(int $id)` نتیجه را در `forward_status`/`forward_attempts`/`last_forward_error` ثبت می‌کند. **TODO: از مستندات API سامانه مادر پر شود.**
+- عمومی: `index.php` (FAQ home + نظرات published)، `pricing.php` (تعرفه از `pricing_values` + FAQ pricing).
+- `admin/inbox.php` — دو-پنله؛ فیلتر all/unread؛ باز کردن با `?id=` خودکار read می‌کند؛ اکشن‌های toggle_read/delete/retry_forward؛ بج فوروارد در انتظار/ارسال‌شد/ناموفق + دکمه ارسال مجدد.
+- `includes/admin_layout.php` — آیتم‌های faq/testi/pricing/inbox فعال شدند.
+- `qa/audit.sh` — بخش ۱۲ (چک‌های فاز ۵) اضافه شد → ۵۶ چک.
+
+### تصمیم‌های فاز ۵
+- بک‌اند تماس **ذخیره اول، فوروارد بعد**: هیچ سرنخی حتی با خطای سامانه مادر گم نمی‌شود؛ خطای فوروارد هرگز به کاربر نمایش داده نمی‌شود (`ok:true`).
+- هانی‌پات نام فیلد `company` است (منطبق با فرم عمومی `assets/js/page-contact.js`، `DEMO_MODE=false`).
+- محدودیت نرخ روی `submissions.created_at` (پنجره ۱ ساعته/IP) — هانی‌پات و درخواست‌های نامعتبر ردیفی نمی‌سازند، پس در سقف نرخ حساب نمی‌شوند.
+- پاسخ‌های FAQ متن ساده‌اند (نه HTML) — ورودی مدیر با `trim` ذخیره و در عمومی با `e()` خروجی می‌گیرد.
+- `MOTHER_API` در `includes/config.php` (git-ignored) است؛ برای تست شبیه‌سازی خطا موقتاً `enabled=true` + URL غیرقابل‌دسترس شد و بعد به `false` بازگردانده شد.
+
+### شواهد پذیرش فاز ۵ (اجرا شده)
+- رفت‌وبرگشت تعرفه: تغییر `sub_12m` از فرم ادمین → `pricing_values` (۳۷۷۷۰۰۰) → `/pricing` رندر `۳٬۷۷۷٬۰۰۰`؛ سپس بازگردانی به ۲۶۹۰۰۰۰.
+- تماس: شماره فارسی `۰۹۱۲ ۳۴۵ ۶۷۸۹` → ذخیره `09123456789`؛ ۵ ثبت موفق، ۶اُم → ۴۲۹؛ شماره نامعتبر → ۴۲۲؛ GET → ۴۰۵.
+- هانی‌پات: `company` پرشده → `ok:true` بدون ردیف در DB.
+- فوروارد: ثبت خوانده‌نشده (`pending`) → ارسال مجدد با URL غیرقابل‌دسترس → `failed`, attempts=۱, خطای cURL ثبت‌شده و در پنل نمایش داده شد؛ ثبت on-arrival با آداپتور فعال هم سرنخ را حفظ کرد (`ok:true`, `failed`).
+- محدوده‌بندی: تب FAQ home = idهای ۱–۷، pricing = ۸–۱۴ (مجزا)؛ نظر draft از صفحه اصلی حذف شد (۳→۲) و با بازگردانی به published دوباره ظاهر شد (۲→۳).
+- رگرسیون ۵۶/۵۶ + احراز هویت صفحات جدید ادمین (۳۰۲) + `/includes/MotherApiClient.php` → ۴۰۳ + دیف بصری ۱۶/۱۶ صفر پیکسل (چون seedها با محتوای استاتیک اصلی یکی‌اند).
+
+### نکات باز فاز ۵ / تأیید لازم از علی
+- بلوک `MOTHER_API` هنوز placeholder است — پر شدن `base_url`/`endpoint`/`api_key`/`instance_id` و `enabled=true` منتظر مستندات API سامانه مادر است.

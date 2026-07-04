@@ -57,7 +57,7 @@ admin_page_start('داشبورد', 'dash');
   <div class="a-card" style="overflow:hidden;">
     <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 18px;border-bottom:1px solid #F0EDE6;">
       <b style="font-size:14px;color:#1F2A44;">آخرین پیام‌های دریافتی</b>
-      <button type="button" class="a-link-coral" disabled title="به‌زودی">همه پیام‌ها ←</button>
+      <a href="/admin/inbox.php" class="a-link-coral" style="text-decoration:none;">همه پیام‌ها ←</a>
     </div>
     <?php if (!$recent): ?>
     <div style="padding:40px 20px;text-align:center;">
@@ -65,12 +65,12 @@ admin_page_start('داشبورد', 'dash');
       <div style="font-size:14px;color:#6B7280;">هنوز پیامی دریافت نشده است.</div>
     </div>
     <?php else: foreach ($recent as $m): ?>
-    <div style="display:flex;align-items:center;gap:10px;border-bottom:1px solid #F6F4EF;padding:11px 18px;font-size:13px;">
+    <a href="/admin/inbox.php?id=<?= (int) $m['id'] ?>" class="a-row" style="display:flex;align-items:center;gap:10px;border-bottom:1px solid #F6F4EF;padding:11px 18px;font-size:13px;text-decoration:none;">
       <?php if (!$m['is_read']): ?><span style="flex:none;width:8px;height:8px;border-radius:50%;background:#E76F51;"></span><?php endif; ?>
       <span style="flex:1;color:#1F2A44;font-weight:<?= $m['is_read'] ? '400' : '700' ?>;"><?= e($m['name']) ?></span>
       <span style="flex:2;color:#6B7280;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><?= e($m['subject'] ?? '') ?></span>
       <span style="flex:none;color:#9a9587;font-size:12px;"><?= e(fa_time_ago($m['created_at'])) ?></span>
-    </div>
+    </a>
     <?php endforeach; endif; ?>
   </div>
 </div>

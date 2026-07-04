@@ -2,10 +2,10 @@
 
 /* ============================================
    Consultation form backend contract
-   TODO: backend wiring (Phase 5) — only these two lines change.
+   Phase 5: wired to the real endpoint.
    ============================================ */
 const CONTACT_ENDPOINT = '/api/contact.php';
-const DEMO_MODE = true; // demo mode simulates a successful response
+const DEMO_MODE = false;
 
 /* Single submission point — no other send logic in this file. */
 async function submitContactForm(data) {

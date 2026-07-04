@@ -1,22 +1,38 @@
 <?php
 /**
- * Pricing page. Static placeholder prices mirror the DB seeds;
- * dynamic wiring arrives in later phases. Markup is the approved
- * design, converted 1:1.
+ * Pricing page. Prices load from the pricing_values table (edited in
+ * admin » تعرفه‌ها); the seed values below are only a fallback if the
+ * DB read fails. Markup is the approved design, converted 1:1.
  */
 require_once __DIR__ . '/includes/layout.php';
 
 $app_url = setting('app_url', 'https://app.dookhtak.ir');
 
-// Prices in toman — match the plan/module seeds.
+// Prices in toman — loaded from pricing_values (seed values as fallback).
+$pv = [
+    'setup_fee' => 490000, 'vip_price' => 9900000,
+    'sub_1m' => 290000, 'sub_3m' => 790000, 'sub_6m' => 1490000, 'sub_12m' => 2690000,
+    'discount_3m_percent' => 9, 'discount_6m_percent' => 14, 'discount_12m_percent' => 23,
+    'module_gallery' => 990000, 'module_sms' => 790000, 'module_gateway' => 690000,
+    'module_domain' => 590000, 'module_dedicated_line' => 890000,
+];
+try {
+    foreach (db()->query('SELECT `key`, `value` FROM pricing_values') as $row) {
+        if (array_key_exists($row['key'], $pv)) {
+            $pv[$row['key']] = (int) $row['value'];
+        }
+    }
+} catch (Throwable $e) {
+    error_log('pricing_values read failed: ' . $e->getMessage());
+}
 $prices = [
-    'setup' => 490000,
-    'vip'   => 9900000,
+    'setup' => $pv['setup_fee'],
+    'vip'   => $pv['vip_price'],
     'sub'   => [
-        '1'  => ['months' => 1,  'total' => 290000,  'discount' => 0],
-        '3'  => ['months' => 3,  'total' => 790000,  'discount' => 9],
-        '6'  => ['months' => 6,  'total' => 1490000, 'discount' => 14],
-        '12' => ['months' => 12, 'total' => 2690000, 'discount' => 23],
+        '1'  => ['months' => 1,  'total' => $pv['sub_1m'],  'discount' => 0],
+        '3'  => ['months' => 3,  'total' => $pv['sub_3m'],  'discount' => $pv['discount_3m_percent']],
+        '6'  => ['months' => 6,  'total' => $pv['sub_6m'],  'discount' => $pv['discount_6m_percent']],
+        '12' => ['months' => 12, 'total' => $pv['sub_12m'], 'discount' => $pv['discount_12m_percent']],
     ],
 ];
 $period_order = ['1', '3', '6', '12'];
@@ -42,15 +58,15 @@ $needle_start = (array_search($default_period, $period_order, true) * 25) . '%';
 
 // Add-on modules — one-time purchases (icon paths from lucide).
 $modules = [
-    ['title' => 'گالری نمونه‌کار', 'desc' => 'ویترین آنلاین عکس و فیلم کارهایت.', 'price' => 990000, 'note' => '',
+    ['title' => 'گالری نمونه‌کار', 'desc' => 'ویترین آنلاین عکس و فیلم کارهایت.', 'price' => $pv['module_gallery'], 'note' => '',
      'iconPath' => 'M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z M12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8z'],
-    ['title' => 'سامانه پیامکی', 'desc' => 'پیامک خودکار، انبوه و تبریک تولد.', 'price' => 790000, 'note' => 'هزینه شارژ پیامک جداگانه محاسبه می‌شود',
+    ['title' => 'سامانه پیامکی', 'desc' => 'پیامک خودکار، انبوه و تبریک تولد.', 'price' => $pv['module_sms'], 'note' => 'هزینه شارژ پیامک جداگانه محاسبه می‌شود',
      'iconPath' => 'M7.9 20A9 9 0 1 0 4 16.1L2 22Z'],
-    ['title' => 'درگاه پرداخت', 'desc' => 'لینک پرداخت آنلاین برای مشتری‌هایت.', 'price' => 690000, 'note' => '',
+    ['title' => 'درگاه پرداخت', 'desc' => 'لینک پرداخت آنلاین برای مشتری‌هایت.', 'price' => $pv['module_gateway'], 'note' => '',
      'iconPath' => 'M22 7H2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2Z M2 7V7a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2 M2 10h20'],
-    ['title' => 'دامنه اختصاصی', 'desc' => 'دوختک روی آدرس اینترنتی خودت.', 'price' => 590000, 'note' => '',
+    ['title' => 'دامنه اختصاصی', 'desc' => 'دوختک روی آدرس اینترنتی خودت.', 'price' => $pv['module_domain'], 'note' => '',
      'iconPath' => 'M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20 M2 12h20'],
-    ['title' => 'خط اختصاصی پیامکی', 'desc' => 'پیامک‌ها با شماره اختصاصی خودت ارسال شود.', 'price' => 890000, 'note' => 'نیازمند ماژول سامانه پیامکی',
+    ['title' => 'خط اختصاصی پیامکی', 'desc' => 'پیامک‌ها با شماره اختصاصی خودت ارسال شود.', 'price' => $pv['module_dedicated_line'], 'note' => 'نیازمند ماژول سامانه پیامکی',
      'iconPath' => 'M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z'],
 ];
 
@@ -78,15 +94,10 @@ $cell_spec = function (string $spec): array {
 };
 
 // FAQ (pricing) — all items closed initially.
-$faqs = [
-    ['q' => 'هزینه راه‌اندازی اولیه شامل چه چیزهایی است؟', 'a' => 'ساخت حساب مزون شما، آماده‌سازی اولیه سامانه و آموزش شروع کار. این هزینه فقط یک‌بار هنگام ثبت‌نام پلن پایه پرداخت می‌شود. [جزئیات دقیق را تیم دوختک تکمیل کند]'],
-    ['q' => 'فرق پلن پایه و پلن ویژه دقیقاً چیست؟', 'a' => 'پلن پایه با اشتراک دوره‌ای کار می‌کند و ماژول‌های اضافه را هر وقت لازم داشتی جداگانه می‌خری. پلن ویژه یک‌بار پرداخت است: بدون اشتراک ماهانه، همه ماژول‌ها از روز اول فعال و همه قابلیت‌های آینده رایگان.'],
-    ['q' => 'ماژول‌ها اشتراکی‌اند یا یک‌بار خرید؟', 'a' => 'یک‌بار برای همیشه. هر ماژول را یک‌بار می‌خری و تا وقتی اشتراک پلن پایه‌ات فعال است، بدون هزینه دوباره استفاده می‌کنی.'],
-    ['q' => '۱۰ روز تست رایگان شامل چه امکاناتی است؟', 'a' => 'در دوره تست به امکانات سامانه دسترسی داری تا با خیال راحت آن را بسنجی؛ بدون نیاز به کارت بانکی. [محدوده دقیق امکانات دوره تست را تیم دوختک تکمیل کند]'],
-    ['q' => 'اگر اشتراک پلن پایه را تمدید نکنم چه می‌شود؟', 'a' => 'اطلاعات شما محفوظ می‌ماند و با تمدید دوباره، همه‌چیز همان‌جا که بود در دسترس است. [مدت نگهداری اطلاعات را تیم دوختک تکمیل کند]'],
-    ['q' => 'هزینه شارژ پیامک چطور حساب می‌شود؟', 'a' => 'شارژ پیامک جدا از قیمت ماژول است و بر اساس تعداد پیامک ارسالی از داخل اپ خریداری می‌شود. [تعرفه هر پیامک را تیم دوختک تکمیل کند]'],
-    ['q' => 'می‌توانم بعداً از پایه به پلن ویژه ارتقا بدهم؟', 'a' => 'بله. [سازوکار محاسبه مابه‌التفاوت را تیم دوختک تکمیل کند]'],
-];
+$faqs = [];
+foreach (db()->query("SELECT question, answer_html FROM faqs WHERE page = 'pricing' ORDER BY sort_order, id") as $faq_row) {
+    $faqs[] = ['q' => $faq_row['question'], 'a' => $faq_row['answer_html']];
+}
 
 render_head([
     'title' => 'تعرفه‌های دوختک | دوختک',
